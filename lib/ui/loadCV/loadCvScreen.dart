@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:swdprojectbackup/services/fire_storage_service.dart';
 
@@ -41,7 +42,7 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage> {
                     bottomLeft: Radius.circular(50.0),
                     bottomRight: Radius.circular(50.0)),
                 gradient: LinearGradient(
-                    colors: [orange, yellow],
+                    //colors: [orange, yellow],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight)),
           ),
@@ -123,7 +124,8 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage> {
                 gradient: LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
-                    colors: [yellow, orange]),
+                    //colors: [yellow, orange]
+                ),
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(
               onPressed: () {
