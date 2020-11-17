@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:swdprojectbackup/services/fire_storage_service.dart';
 
@@ -10,29 +9,26 @@ final String image2 = "cv2.jpg";
 
 String image = image1;
 
-
 class CvScreen extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       // theme: ThemeData(
       //   primarySwatch: Colors.blue,
       //   visualDensity: VisualDensity.adaptivePlatformDensity,
       // ),
-        body: LoadFirbaseStorageImage(),
-        );
+      body: LoadFirbaseStorageImage(),
+    );
   }
 }
 
 class LoadFirbaseStorageImage extends StatefulWidget {
   @override
-  _LoadFirbaseStorageImageState createState() => _LoadFirbaseStorageImageState();
+  _LoadFirbaseStorageImageState createState() =>
+      _LoadFirbaseStorageImageState();
 }
 
-class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage > {
+class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,9 +78,9 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage > {
                                   ConnectionState.done)
                                 return Container(
                                   height:
-                                  MediaQuery.of(context).size.height / 1.25,
+                                      MediaQuery.of(context).size.height / 1.25,
                                   width:
-                                  MediaQuery.of(context).size.width / 1.25,
+                                      MediaQuery.of(context).size.width / 1.25,
                                   child: snapshot.data,
                                 );
 
@@ -120,13 +116,14 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage > {
         children: <Widget>[
           Container(
             padding:
-            const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
+                const EdgeInsets.symmetric(vertical: 5.0, horizontal: 16.0),
             margin: const EdgeInsets.only(
                 top: 30, left: 20.0, right: 20.0, bottom: 20.0),
             decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [yellow, orange],
-                ),
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [yellow, orange]),
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(
               onPressed: () {

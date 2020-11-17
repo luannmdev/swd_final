@@ -20,6 +20,7 @@ class ProfileViewModel with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String email = await prefs.getString('email');
     String token = await prefs.getString('token');
+    print('aaaaaaaaaaaaa - $email');
     // print('$email - $token');
     Profile pro = await WebService().getProfile(email,token);
     notifyListeners();

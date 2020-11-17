@@ -1,4 +1,4 @@
-import 'file:///E:/Study-code/Android/FlutterProjects/swd/finding_job_project/lib/ui/base.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:swdprojectbackup/services/google_service.dart';
 import 'package:swdprojectbackup/services/web_service.dart';
@@ -11,6 +11,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import '../base.dart';
 
 class LoginScreen extends StatefulWidget {
   String _title;

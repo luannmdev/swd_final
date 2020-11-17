@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:swdprojectbackup/ui/blank/blankScreen.dart';
 import 'package:swdprojectbackup/ui/news/newsListViewModel.dart';
 import 'package:swdprojectbackup/ui/news/newsScreen.dart';
+import 'package:swdprojectbackup/ui/noti/notiScreen.dart';
 import 'package:swdprojectbackup/ui/ojt/chooseCompViewModel.dart';
 import 'package:swdprojectbackup/ui/ojt/ojtScreen.dart';
 import 'package:swdprojectbackup/ui/profile/profileScreen.dart';
@@ -100,12 +101,15 @@ class IndexPageState extends State<IndexPage> {
     if (!profileViewModel.loadingStatus) {
       return Scaffold(
         appBar: AppBar(
+          backgroundColor: Color(0xFFf75205),
           automaticallyImplyLeading: false,
           title: Text("OJT PROJECT"),
           actions: <Widget>[
             new IconButton(
                 icon: const Icon(Icons.notifications_active),
                 onPressed: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => NotiPage()));
                   // do something
                 })
           ],

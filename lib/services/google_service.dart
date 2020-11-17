@@ -38,6 +38,7 @@ Future<bool> signInWithGoogle() async {
       String idToken = await WebService().getIdToken(token);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('idToken', idToken);
+      await prefs.setString('email', user.email);
     }
     return loginStatus;
   }
