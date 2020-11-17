@@ -1,9 +1,11 @@
-import 'file:///E:/Study-code/Android/FlutterProjects/swd/finding_job_project/lib/ui/base.dart';
+
 import 'package:swdprojectbackup/ui/login/loginScreen.dart';
 // import 'package:bancher/ui/home/homescreen.dart';
 import 'package:swdprojectbackup/ui/splash/splashViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../base.dart';
 
 class Splash extends BasePage {
   Splash({String title: ''}) : super(title);

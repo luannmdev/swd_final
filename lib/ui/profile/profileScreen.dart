@@ -6,6 +6,7 @@ import 'package:swdprojectbackup/models/account.dart';
 import 'package:swdprojectbackup/models/profile.dart';
 import 'package:swdprojectbackup/services/google_service.dart';
 import 'package:swdprojectbackup/services/web_service.dart';
+import 'package:swdprojectbackup/ui/loadCV/loadCvScreen.dart';
 import 'package:swdprojectbackup/ui/login/loginScreen.dart';
 import 'package:swdprojectbackup/ui/profile/profileViewModel.dart';
 
@@ -257,7 +258,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   Widget _buttonLogout() {
     return RaisedButton(
       onPressed: () {
@@ -284,19 +284,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: TextStyle(fontSize: 15, color: Colors.red),
         ),
       ),
-      // elevation: 5,
-      // shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.circular(40)),
     );
   }
 
-  void _showToast(BuildContext context) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: const Text('This is message'),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+  Widget _buttonCv() {
+    return RaisedButton(
+      onPressed: () {
+        Navigator.of(context).push(
+            new MaterialPageRoute(
+                builder: (context) => CvScreen()));
+      },
+      color: Colors.blue,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          'Update CV',
+          style: TextStyle(fontSize: 15, color: Colors.white),
+        ),
       ),
     );
   }
@@ -306,21 +310,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // TODO: implement initState
     super.initState();
     Provider.of<ProfileViewModel>(context, listen: false).getProfile();
-    // textController_fullname.text = '{profileViewModel.profile.fullname}';
-    // textController_email.text = 'aaa';
-    // textController_phoneNo.text = '012';
-    // textController_gpa.text = '012';
-    // textController_cvLink.text = '123';
-
     textController_fullname = new TextEditingController(text: '${profile.fullname}');
-    // textController_email = new TextEditingController(text: '${profile.email}');
     textController_phoneNo = new TextEditingController(text: '${profile.phoneNo}');
     textController_gpa = new TextEditingController(text: '${profile.gpa}');
     textController_cvLink = profile.cv == 'null' ? new TextEditingController()
         : new TextEditingController(text: '${profile.cv}');
 
     textFieldFocus_fullname = FocusNode();
-    // textFieldFocus_email = FocusNode();
     textFieldFocus_phoneNo = FocusNode();
     textFieldFocus_gpa = FocusNode();
     textFieldFocus_cvLink = FocusNode();
@@ -338,6 +334,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 _circleAvatar(),
                 _textFormFieldCalling(),
+                _buttonCv(),
                 _buttonLogout(),
               ],
             ),
@@ -348,7 +345,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-//Color(0xff555555)
 class HeaderCurvedContainer extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {

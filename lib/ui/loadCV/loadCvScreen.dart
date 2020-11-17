@@ -6,7 +6,7 @@ import 'package:swdprojectbackup/services/fire_storage_service.dart';
 final Color yellow = Color(0xfffbc31b);
 final Color orange = Color(0xfffb6900);
 final String image1 = "cv1.jpg";
-final String image2 = "/v2.jpg";
+final String image2 = "cv2.jpg";
 
 String image = image1;
 
