@@ -298,7 +298,6 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                           ),
                         ),
                         onPressed: () {
-
                           print('Check update profile');
                           if (!updateProfileStatus) {
                             Fluttertoast.showToast(
@@ -342,8 +341,6 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                               appList.add(new Application(
                                   stuCode: stuId, jobId: _selectedCompany3.id,status: 'Processing'));
                             }
-
-
                             //Pass all
                             //call api
                             Provider.of<ChooseCompViewModel>(context,listen: false).applyJob(appList).then((res) =>

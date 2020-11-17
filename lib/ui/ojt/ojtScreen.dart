@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swdprojectbackup/ui/blank/blankScreen.dart';
 import 'package:swdprojectbackup/ui/ojt/resultScreen.dart';
+import 'package:swdprojectbackup/ui/ojt/theResultScreen.dart';
 import 'package:swdprojectbackup/ui/profile/profileViewModel.dart';
 import 'chooseCompViewModel.dart';
 import 'updateProfileScreen.dart';
@@ -186,7 +187,7 @@ class _OjtScreenState extends State<OjtScreen>
                         onDataChange: onDataChange,
                         updateProfileStatus: statusStep[0],
                       )
-                    : ResultScreen()
+                    : TheResultScreen()
           ])),
     );
   }

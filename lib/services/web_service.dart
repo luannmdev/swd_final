@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swdprojectbackup/models/account.dart';
 import 'package:swdprojectbackup/models/application.dart';
 import 'package:swdprojectbackup/models/companyChoose.dart';
@@ -40,6 +41,10 @@ class WebService {
   }
 
   Future<List<News>> fetchTopHeadlines(int pageNum, String uniCode, String majorCode, String subject) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String idToken = await prefs.getString('idToken');
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["authorization"] = "Bearer ${idToken}";
     String url = Constants.TOP_HEADLINES_URL + '/$pageNum' + '/$uniCode' + '/$majorCode' + '/$subject';
     var response = await dio.get(url);
     if (response.statusCode == 200) {
@@ -52,6 +57,10 @@ class WebService {
   }
 
   Future<News> getNewsDetailById(int idNews) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String idToken = await prefs.getString('idToken');
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["authorization"] = "Bearer ${idToken}";
     String url = Constants.GET_NEWS_DETAIL_BY_ID + '/$idNews';
     print(url);
     final response = await dio.get(url);
@@ -65,6 +74,10 @@ class WebService {
   }
 
   Future<Profile> getProfile(String email,String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String idToken = await prefs.getString('idToken');
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["authorization"] = "Bearer ${idToken}";
     print('service profile running');
     print('$email');
     String url = Constants.GET_PROFILE_BY_EMAIL_ROLE + '/$email';
@@ -84,6 +97,10 @@ class WebService {
   }
 
   Future<bool> updateProfile(Profile profile) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String idToken = await prefs.getString('idToken');
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["authorization"] = "Bearer ${idToken}";
     print('update profile processing');
     String url = Constants.UPDATE_PROFILE + '/${profile.code}';
     print('$url');
@@ -102,6 +119,10 @@ class WebService {
   }
 
   Future<List<CompanyChoose>> getCompanyChoose(String uniCode, String majorCode, String subject) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String idToken = await prefs.getString('idToken');
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["authorization"] = "Bearer ${idToken}";
     print('get company choose');
     String url = Constants.GET_COMPANY_CHOOSE + '/$uniCode/$majorCode/$subject';
     var response = await dio.get(url);
