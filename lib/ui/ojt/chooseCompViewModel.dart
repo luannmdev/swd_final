@@ -49,4 +49,9 @@ class ChooseCompViewModel with ChangeNotifier {
     return res;
   }
 
+  Future<bool> updateLastSent(String stuCode, int lastSent) async {
+    print('updateLastSent processingggggg');
+    return await WebService().updateLastSent(stuCode,lastSent);
+  }
+
 }
