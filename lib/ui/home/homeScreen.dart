@@ -4,163 +4,222 @@ import 'package:swdprojectbackup/ui/news/newsListViewModel.dart';
 import 'package:swdprojectbackup/ui/news/newsScreen.dart';
 import 'package:swdprojectbackup/ui/ojt/chooseCompViewModel.dart';
 import 'package:swdprojectbackup/ui/ojt/ojtScreen.dart';
-// import 'package:swdprojectbackup/ui/newsdetail/newsDetailScreen.dart';
-// import 'package:swdprojectbackup/ui/ojt/ojtScreen.dart';
 import 'package:swdprojectbackup/ui/profile/profileScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:swdprojectbackup/ui/profile/profileViewModel.dart';
 
 class HomeScreen extends StatelessWidget {
+  final List<int> appliedList;
+
+  HomeScreen({this.appliedList});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'OJT PROJECT',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
+    return Scaffold(
+
+
+
+        // theme: ThemeData(
+        //   primarySwatch: Colors.blue,
+        //   visualDensity: VisualDensity.adaptivePlatformDensity,
+        // ),
+        body: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
               create: (_) => NewsListViewModel(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => ProfileViewModel(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => ChooseCompViewModel(),
-          ),
-        ],
-        child: IndexPage(),
-      )
-    );
+            ),
+            ChangeNotifierProvider(
+              create: (_) => ProfileViewModel(),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => ChooseCompViewModel(),
+            ),
+          ],
+          child: IndexPage(appliedList: appliedList,),
+        ));
   }
 }
 
 class IndexPage extends StatefulWidget {
-  IndexPage({Key key}) : super(key: key);
+  final List<int> appliedList;
 
+  IndexPage({this.appliedList});
   @override
   State<StatefulWidget> createState() {
-    return IndexPageState();
+    return IndexPageState(appliedList);
   }
-
 }
-
-RelativeRect buttonMenuPosition(BuildContext c) {
-  final RenderBox bar = c.findRenderObject();
-  final RenderBox overlay = Overlay.of(c).context.findRenderObject();
-  final RelativeRect position = RelativeRect.fromRect(
-    Rect.fromPoints(
-      bar.localToGlobal(bar.size.bottomRight(Offset.zero), ancestor: overlay),
-      bar.localToGlobal(bar.size.bottomRight(Offset.zero), ancestor: overlay),
-    ),
-    Offset.zero & overlay.size,
-  );
-  return position;
-}
-//Positioned(right: 0, bottom: bottomAppBarHeight)
 
 class IndexPageState extends State<IndexPage> {
-  int selectedIndex = 0;
-  // Widget _myIndex = NewsScreen();
-  // Widget _myOJT = OjtScreen();
-  // Widget _myReport = BlankScreen();
-  // Widget _myProfile = ProfileScreen();
-
-  // Widget _myIndex = NewsScreen();
-  // Widget _myOJT = OjtScreen();
+  List<int> appliedList;
+  PageController pageController;
+  int _selectedIndex = 0;
   Widget _myReport = BlankScreen();
-  // Widget _myProfile = ProfileScreen();
+
+  IndexPageState(this.appliedList);
 
   @override
   void initState() {
-    Provider.of<ProfileViewModel>(context,listen: false).getProfile();
+    // print('appliedList - ${appliedList.length}');
+    if(appliedList == null) {
+      appliedList = new List();
+    }
+    pageController = PageController();
+    Provider.of<ProfileViewModel>(context, listen: false).getProfile();
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final key = GlobalKey<State<BottomNavigationBar>>();
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("OJT PROJECT"),
-        actions: <Widget>[
-          new IconButton(
-              icon: const Icon(Icons.notifications_active),
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => NewsDetailPage()),
-                // );
-              }
-          )
-        ],
-      ),
-      body:  this.getBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        key: key,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: this.selectedIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Index"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.work),
-            title: Text("OJT"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            title: Text("Report"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            title: Text("Profile"),
-          )
-        ],
-        onTap: (int index) async {
-          this.onTapHandler(index);
-          // final position = buttonMenuPosition(key.currentContext);
-          // if (index == 3) {
-          //   final result = await showMenu(
-          //     context: context,
-          //     position: position,
-          //     items: <PopupMenuItem<String>>[
-          //       const PopupMenuItem<String>(
-          //           child: Text('test1'), value: 'test1'),
-          //       const PopupMenuItem<String>(
-          //           child: Text('test2'), value: 'test2'),
-          //     ],
-          //   );
-          // } else {
-          //   this.onTapHandler(index);
-          // }
-        },
-      ),
-    );
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 
-  Widget getBody()  {
-    var  profileViewModel = Provider.of<ProfileViewModel>(context);
-    if (!profileViewModel.loadingStatus) {
-      if (this.selectedIndex == 0) {
-        return NewsScreen(profileViewModel.profile.uniCode,profileViewModel.profile.majorCode,profileViewModel.profile.graduation);
-      } else if(this.selectedIndex == 1) {
-        return OjtScreen(uniCode: profileViewModel.profile.uniCode,majorCode: profileViewModel.profile.majorCode,subject: profileViewModel.profile.graduation,);
-      } else if(this.selectedIndex == 2) {
-        return this._myReport;
-      } else {
-        return ProfileScreen(profile: profileViewModel.profile,);
-      }
-    }
-
+  void onDataChange(List<int> newAppliedList) {
+    setState(() => appliedList = newAppliedList);
+    print('test thanh cong ${appliedList.toString()}');
   }
 
-  void onTapHandler(int index)  {
+  void onTapHandler(int index) {
     this.setState(() {
-      this.selectedIndex = index;
+      this._selectedIndex = index;
     });
+    pageController.jumpToPage(index);
+  }
+
+  void onPageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var profileViewModel = Provider.of<ProfileViewModel>(context);
+    final key = GlobalKey<State<BottomNavigationBar>>();
+    if (!profileViewModel.loadingStatus) {
+      return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text("OJT PROJECT"),
+          actions: <Widget>[
+            new IconButton(
+                icon: const Icon(Icons.notifications_active),
+                onPressed: () {
+                  // do something
+                })
+          ],
+        ),
+        body: WillPopScope(
+            onWillPop: _onWillPop,
+            child: PageView(
+              controller: pageController,
+              onPageChanged: onPageChanged,
+              children: [
+                NewsScreen(
+                      appliedList,
+                      profileViewModel.profile.uniCode,
+                      profileViewModel.profile.majorCode,
+                      profileViewModel.profile.graduation,
+                      onDataChange,
+                ),
+                OjtScreen(
+                      appliedList: appliedList,
+                      uniCode: profileViewModel.profile.uniCode,
+                      majorCode: profileViewModel.profile.majorCode,
+                      subject: profileViewModel.profile.graduation,
+                      onDataChange: onDataChange,
+                    ),
+
+                BlankScreen(),
+                ProfileScreen(
+                      profile: profileViewModel.profile,
+                    )
+              ],
+            ),
+        ),
+
+        bottomNavigationBar: BottomNavigationBar(
+          key: key,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: this._selectedIndex,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              title: Text("Index"),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.work),
+              title: Text("OJT"),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.receipt_long),
+              title: Text("Report"),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text("Profile"),
+            )
+          ],
+          onTap: (int index) async {
+            this.onTapHandler(index);
+          },
+        ),
+      );
+    } else {
+      return Center(child: CircularProgressIndicator());
+    };
+  }
+
+  // Widget getBody() {
+  //   var profileViewModel = Provider.of<ProfileViewModel>(context);
+  //   if (!profileViewModel.loadingStatus) {
+  //     if (this._selectedIndex == 0) {
+  //       return WillPopScope(
+  //           onWillPop: _onWillPop,
+  //           child: NewsScreen(
+  //               appliedList,
+  //               profileViewModel.profile.uniCode,
+  //               profileViewModel.profile.majorCode,
+  //               profileViewModel.profile.graduation));
+  //     } else if (this._selectedIndex == 1) {
+  //       return WillPopScope(
+  //           onWillPop: _onWillPop,
+  //           child: OjtScreen(
+  //             uniCode: profileViewModel.profile.uniCode,
+  //             majorCode: profileViewModel.profile.majorCode,
+  //             subject: profileViewModel.profile.graduation,
+  //           ));
+  //     } else if (this._selectedIndex == 2) {
+  //       return this._myReport;
+  //     } else {
+  //       return WillPopScope(
+  //           onWillPop: _onWillPop,
+  //           child: ProfileScreen(
+  //             profile: profileViewModel.profile,
+  //           ));
+  //     }
+  //   }
+  // }
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit an App'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
   }
 }

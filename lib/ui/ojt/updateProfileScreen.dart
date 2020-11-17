@@ -24,6 +24,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   Widget build(BuildContext context) {
     var profileViewModel = Provider.of<ProfileViewModel>(context);
     setState(() {
+      status[0] = false;
+      status[1] = false;
+      status[2] = false;
+      status[3] = false;
       if (profileViewModel.profile.email != '') {
         status[0] = true;
       }

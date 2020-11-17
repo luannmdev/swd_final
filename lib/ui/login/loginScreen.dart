@@ -1,4 +1,5 @@
 import 'file:///E:/Study-code/Android/FlutterProjects/swd/finding_job_project/lib/ui/base.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:swdprojectbackup/services/google_service.dart';
 import 'package:swdprojectbackup/services/web_service.dart';
 import 'package:swdprojectbackup/ui/blank/blankScreen.dart';
@@ -9,7 +10,6 @@ import 'package:swdprojectbackup/ui/login/loginviewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:toast/toast.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -104,7 +104,16 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Text('Login with School\'s account'),
       onPressed: () {
         signInWithGoogle().then((result) {
-          if (result != null) {
+          if (result) {
+            Fluttertoast.showToast(
+                msg: "Login Success",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.blue,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) {
@@ -125,6 +134,25 @@ class _LoginScreenState extends State<LoginScreen> {
     ),
   );
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => new AlertDialog(
+        title: new Text('Are you sure?'),
+        content: new Text('Do you want to exit an App'),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: new Text('No'),
+          ),
+          new FlatButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: new Text('Yes'),
+          ),
+        ],
+      ),
+    )) ?? false;
+  }
   // Widget loginButton(Function onPressed) {
   //   return Center(
   //     child: Padding(

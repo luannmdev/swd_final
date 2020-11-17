@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swdprojectbackup/models/account.dart';
@@ -23,12 +24,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _ProfileScreenState(this.profile);
 
   FocusNode textFieldFocus_fullname;
-  FocusNode textFieldFocus_email;
+  // FocusNode textFieldFocus_email;
   FocusNode textFieldFocus_phoneNo;
   FocusNode textFieldFocus_gpa;
   FocusNode textFieldFocus_cvLink;
   TextEditingController textController_fullname;
-  TextEditingController textController_email;
+  // TextEditingController textController_email;
   TextEditingController textController_phoneNo;
   TextEditingController textController_gpa;
   TextEditingController textController_cvLink;
@@ -90,6 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           Expanded(
             child: new TextField(
+              keyboardType: ((id == 3)||(id == 2))? TextInputType.number: TextInputType.text,
               focusNode: focusNode,
               readOnly: !listEdit.contains(textId),
               controller: controller,
@@ -140,8 +142,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           _textFormField(
               id: 0,
-              hintText:
-                  profile.fullname == null ? 'Full-Name' : profile.fullname,
+              // hintText:
+              //     profile.fullname == null ? 'Full-Name' : profile.fullname,
               icon: Icons.person,
               text: 'Fullname',
               editable: true,
@@ -153,14 +155,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               hintText: profile.email == null ? 'E-mail' : profile.email,
               icon: Icons.mail,
               text: 'Email',
-              editable: false,
-              focusNode: textFieldFocus_email,
-              controller: textController_email),
+              editable: false,),
+              // focusNode: textFieldFocus_email,
+              // controller: textController_email),
           SizedBox(height: 3),
           _textFormField(
               id: 2,
-              hintText:
-                  profile.phoneNo == null ? 'Contact Number' : profile.phoneNo,
+              // hintText:
+              //     profile.phoneNo == null ? 'Contact Number' : profile.phoneNo,
               icon: Icons.phone,
               text: 'Phone',
               editable: true,
@@ -169,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(height: 3),
           _textFormField(
               id: 3,
-              hintText: profile.gpa == null ? 'GPA' : '${profile.gpa}',
+              // hintText: profile.gpa == null ? 'GPA' : '${profile.gpa}',
               icon: Icons.person,
               text: 'GPA',
               editable: true,
@@ -178,7 +180,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(height: 3),
           _textFormField(
               id: 4,
-              hintText: profile.cv == null ? 'CV link' : profile.cv,
+              // hintText: profile.cv == null ? 'CV link' : profile.cv,
               icon: Icons.link,
               text: 'CV',
               editable: true,
@@ -225,18 +227,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     : {};
                 textController_gpa.text != ''
                     ? profile.gpa = double.parse(textController_gpa.text)
-                    : {};
+                    : profile.gpa = 0;
                 textController_phoneNo.text != ''
                     ? profile.phoneNo = textController_phoneNo.text
                     : {};
-                textController_cvLink.text != ''
+                textController_cvLink.text != 'null'
                     ? profile.cv = textController_cvLink.text
                     : {};
                 print(profile.toString());
                 profileViewModel.updateProfile(profile);
-                setState(() {
-
-                });
+                // print(profileViewModel.updateStatus);
+                // print(LoadingStatus.completed);
+                if (profileViewModel.updateStatus == LoadingStatus.completed) {
+                  Fluttertoast.showToast(
+                      msg: "Update Success",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.blue,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                }
               },
             ),
           ),
@@ -245,10 +257,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+
   Widget _buttonLogout() {
     return RaisedButton(
       onPressed: () {
         signOutGoogle();
+        Fluttertoast.showToast(
+            msg: "Logout",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.yellow,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) {
           return LoginScreen();
@@ -291,13 +313,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // textController_cvLink.text = '123';
 
     textController_fullname = new TextEditingController(text: '${profile.fullname}');
-    textController_email = new TextEditingController(text: '${profile.email}');
+    // textController_email = new TextEditingController(text: '${profile.email}');
     textController_phoneNo = new TextEditingController(text: '${profile.phoneNo}');
     textController_gpa = new TextEditingController(text: '${profile.gpa}');
-    textController_cvLink = new TextEditingController(text: '${profile.cv}');
+    textController_cvLink = profile.cv == 'null' ? new TextEditingController()
+        : new TextEditingController(text: '${profile.cv}');
 
     textFieldFocus_fullname = FocusNode();
-    textFieldFocus_email = FocusNode();
+    // textFieldFocus_email = FocusNode();
     textFieldFocus_phoneNo = FocusNode();
     textFieldFocus_gpa = FocusNode();
     textFieldFocus_cvLink = FocusNode();

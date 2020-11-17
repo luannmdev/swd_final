@@ -2,11 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swdprojectbackup/services/web_service.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
-Future<String> signInWithGoogle() async {
+Future<bool> signInWithGoogle() async {
   print('signInWithGoogle is running');
   await Firebase.initializeApp();
 
@@ -29,11 +30,16 @@ Future<String> signInWithGoogle() async {
     assert(user.uid == currentUser.uid);
 
     print('signInWithGoogle succeeded: $user');
-    // print('Users id token: ${await user.getIdToken()}');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('email', "loctpse130asd");
-    await prefs.setString('role', "Student");
-    return '$user';
+
+    bool loginStatus = await WebService().loginByEmail(user.email);
+    if (loginStatus == true) {
+      String token = '${await user.getIdToken()}';
+      print(token);
+      String idToken = await WebService().getIdToken(token);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('idToken', idToken);
+    }
+    return loginStatus;
   }
 
   return null;

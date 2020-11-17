@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:swdprojectbackup/models/account.dart';
+import 'package:swdprojectbackup/models/application.dart';
 import 'package:swdprojectbackup/models/companyChoose.dart';
 import 'package:swdprojectbackup/models/news.dart';
 import 'package:swdprojectbackup/models/profile.dart';
@@ -12,6 +13,31 @@ import 'package:swdprojectbackup/utils/constants.dart';
 
 class WebService {
   var dio = new Dio();
+
+  Future<bool> loginByEmail(String email) async {
+    String url = Constants.LOGIN_BY_EMAIL + '/$email';
+    print(url);
+    final response = await dio.get(url);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<String> getIdToken(String token) async {
+    String url = Constants.GET_ID_TOKEN;
+    print(url+token);
+    final response = await dio.post(url + token);
+    if (response.statusCode == 200) {
+      print('status code 200');
+      Map<String, dynamic> result = response.data;
+      print('${result["token"]}');
+      return result["token"];
+    } else {
+      throw Exception("Failled to get news");
+    }
+  }
 
   Future<List<News>> fetchTopHeadlines(int pageNum, String uniCode, String majorCode, String subject) async {
     String url = Constants.TOP_HEADLINES_URL + '/$pageNum' + '/$uniCode' + '/$majorCode' + '/$subject';
@@ -38,12 +64,16 @@ class WebService {
     }
   }
 
-  Future<Profile> getProfile(String email, String role) async {
+  Future<Profile> getProfile(String email,String token) async {
     print('service profile running');
-    String url = Constants.GET_PROFILE_BY_EMAIL_ROLE + '/$email/$role';
+    print('$email');
+    String url = Constants.GET_PROFILE_BY_EMAIL_ROLE + '/$email';
     print('$url');
+    // RequestOptions options;
+    // options.headers["Authorization"] = "Bearer " + token;
     var response = await dio.get(url);
     print(response.toString());
+    print(response.statusCode);
     if (response.statusCode == 200) {
       Map<String, dynamic> result = response.data;
       print('aaaaaaaaaaaaa $result');
@@ -67,9 +97,8 @@ class WebService {
       print('aaaaaaaaaaaa');
       return true;
     } else {
-      throw Exception("Failled to get profile");
+      return false;
     }
-    return false;
   }
 
   Future<List<CompanyChoose>> getCompanyChoose(String uniCode, String majorCode, String subject) async {
@@ -81,6 +110,30 @@ class WebService {
       return result.map((com) => CompanyChoose.fromJson(com)).toList();
     } else {
       throw Exception("Failled to get profile");
+    }
+  }
+
+  Future<bool> applyJob(Application application,String token) async {
+    print('post application processing -stuCode:${application.stuCode} - appId:${application.jobId}');
+    String url = Constants.APPLY_JOB;
+    // print('token - $token');
+    var data = {
+      "stuCode": "${application.stuCode}",
+      "jobId": json.encode(application.jobId),
+      "status": "${application.status}",
+    };
+    // RequestOptions options;
+    // options.headers["Authorization"] = "Bearer " + token;
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["authorization"] = "Bearer ${token}";
+    // print(json.encode(application.toJson()));
+    var response = await dio.post(url, data: data);
+    // var response = await dio.post(url, data: testData);
+    print(response.toString());
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
     }
   }
 

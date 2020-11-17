@@ -1,48 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:swdprojectbackup/ui/blank/blankScreen.dart';
 import 'package:swdprojectbackup/ui/home/homeScreen.dart';
 import 'package:swdprojectbackup/ui/news/newsListViewModel.dart';
 import 'package:swdprojectbackup/ui/news/newsScreen.dart';
 // import 'package:swdprojectbackup/ui/profile/profileScreen.dart';
 import 'package:provider/provider.dart';
+import 'package:swdprojectbackup/ui/news/newsViewModel.dart';
 import 'package:swdprojectbackup/ui/newsdetail/newsDetailViewModel.dart';
 
 class NewsDetailScreen extends StatelessWidget {
+  final List<int> appliedList;
   final int idNews;
-  NewsDetailScreen({Key key, @required this.idNews}) : super(key: key);
+  NewsDetailScreen({Key key, this.appliedList,@required this.idNews}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'OJT PROJECT',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: MultiProvider(
+    return Scaffold(
+
+        // theme: ThemeData(
+        //   primarySwatch: Colors.blue,
+        //   visualDensity: VisualDensity.adaptivePlatformDensity,
+        // ),
+        body: MultiProvider(
           providers: [
             ChangeNotifierProvider(
               create: (_) => NewsListViewModel(),
             )
           ],
-          child: NewsDetailPage(idNews: idNews),
+          child: NewsDetailPage(appliedList: appliedList,idNews: idNews),
         ));
   }
 }
 
 class NewsDetailPage extends StatefulWidget {
+  final List<int> appliedList;
   final int idNews;
-  NewsDetailPage({Key key, @required this.idNews}) : super(key: key);
+  NewsDetailPage({Key key, this.appliedList, @required this.idNews}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return NewsDetailPageState(idNews);
+    return NewsDetailPageState(appliedList,idNews);
   }
 }
 
 class NewsDetailPageState extends State<NewsDetailPage> {
+  List<int> appliedList;
   final int idNews;
-  NewsDetailPageState(this.idNews);
+  String textButton = 'Apply Job';
+  Color colorButton = Colors.blue;
+  NewsDetailPageState(this.appliedList,this.idNews);
 
   @override
   void initState() {
@@ -53,22 +60,99 @@ class NewsDetailPageState extends State<NewsDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (appliedList == null) {
+      appliedList = new List();
+    }
     var viewModel = Provider.of<NewsDetailViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
-              // Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
+              Navigator.pop(context,appliedList);
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => HomeScreen(appliedList: appliedList,)),
+              // );
             }),
       ),
       body: viewModel.loadingStatus
           ? CircularProgressIndicator()
           : _newsDetailViews(),
+    );
+  }
+
+  Widget _buttonRemoveJob(NewsViewModel article){
+    return RaisedButton(
+      color: Colors.orange,
+      child: Center(
+        child: Text(
+          'Remove Job',
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      onPressed: () {
+        print('remove job');
+        setState(() {
+          appliedList.remove(article.id);
+        });
+        Fluttertoast.showToast(
+            msg: "Removed from applies list",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.orange,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+
+      },
+    );
+  }
+
+  Widget _buttonAddJob(NewsViewModel article){
+    return RaisedButton(
+      color: Colors.blue,
+      child: Center(
+        child: Text(
+          'Apply Job',
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      onPressed: () {
+        print('apply job ${appliedList.length}');
+        if (appliedList.length == 3) {
+          Fluttertoast.showToast(
+              msg: "Your list job has been full - ${appliedList.length}/3",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.blue,
+              textColor: Colors.orange,
+              fontSize: 16.0
+          );
+        } else if (!appliedList.contains(article)) {
+          setState(() {
+            appliedList.add(article.id);
+          });
+          Fluttertoast.showToast(
+              msg: "Added to applies list - ${appliedList.length}/3",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.blue,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+        }
+
+      },
     );
   }
 
@@ -159,6 +243,20 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                             ),
                           ]
                       ),
+                      Row(
+                          children:[
+                            Text(
+                              'Applied List: ',
+                              style:const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              appliedList.toString(),
+                              style:const TextStyle(fontSize: 18.0),
+                              textAlign: TextAlign.left,
+                            ),
+                          ]
+                      ),
                     ]
                   ),
                 ),
@@ -168,22 +266,8 @@ class NewsDetailPageState extends State<NewsDetailPage> {
               margin: const EdgeInsets.only(top: 10.0),
               height: 55,
               width: 150,
-              child: RaisedButton(
-                color: Theme.of(context).primaryColor,
-                child: Center(
-                  child: Text(
-                    'Apply Job',
-                    style: TextStyle(
-                      fontSize: 23,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  print('appply job');
-
-                },
-              ),
+              child: appliedList.contains(viewModel.article.id) ? _buttonRemoveJob(viewModel.article)
+                  : _buttonAddJob(viewModel.article),
             ),
           ],
         ),

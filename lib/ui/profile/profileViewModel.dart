@@ -19,8 +19,9 @@ class ProfileViewModel with ChangeNotifier {
   void getProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String email = await prefs.getString('email');
-    String role = await prefs.getString('role');
-    Profile pro = await WebService().getProfile(email,role);
+    String token = await prefs.getString('token');
+    // print('$email - $token');
+    Profile pro = await WebService().getProfile(email,token);
     notifyListeners();
     this.profile = Profile(
       code: pro.code,

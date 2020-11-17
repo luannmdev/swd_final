@@ -25,7 +25,6 @@ class _SplashState extends State<Splash> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                  // isLoggedIn ? HomeScreen() : LoginScreen()),
                   isLoggedIn ? LoginScreen() : LoginScreen()),
             );
           })

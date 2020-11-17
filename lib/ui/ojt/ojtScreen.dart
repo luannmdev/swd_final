@@ -8,54 +8,68 @@ import 'updateProfileScreen.dart';
 import 'chooseCompScreen.dart';
 
 class OjtScreen extends StatefulWidget {
+  final List<int> appliedList;
+
+
   final String uniCode;
   final String majorCode;
   final String subject;
+  final Function(List<int>) onDataChange;
 
-  OjtScreen({this.uniCode, this.majorCode, this.subject});
+  OjtScreen({this.appliedList, this.uniCode, this.majorCode, this.subject,this.onDataChange});
 
   @override
-  _OjtScreenState createState() => _OjtScreenState(uniCode: uniCode,majorCode: majorCode,subject: subject);
+  _OjtScreenState createState() =>
+      _OjtScreenState(onDataChange: onDataChange,appliedList: this.appliedList, uniCode: uniCode, majorCode: majorCode, subject: subject);
 }
 
-class _OjtScreenState extends State<OjtScreen> {
+class _OjtScreenState extends State<OjtScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  final List<int> appliedList;
+  List<int> testlist;
+
   final String uniCode;
   final String majorCode;
   final String subject;
+  final Function(List<int>) onDataChange;
 
-  _OjtScreenState({this.uniCode, this.majorCode, this.subject});
-
+  _OjtScreenState({this.appliedList, this.uniCode, this.majorCode, this.subject,this.onDataChange});
 
   int selectedIndex = 0;
-  List<String> actionStep = ['Update','Choose','The'];
+  List<String> actionStep = ['Update', 'Choose', 'The'];
   List<String> actionStepMapping = ['Profile', 'Comp', 'Result'];
-  List<bool> statusStep = [false,false,false];
+  List<bool> statusStep = [false, false, false];
 
   Widget _updateProfile = UpdateProfileScreen();
   Widget _blank = BlankScreen();
 
-
-  Widget getBody( )  {
-    if(this.selectedIndex == 0) {
+  Widget getBody() {
+    if (this.selectedIndex == 0) {
       return this._updateProfile;
-    } else if(this.selectedIndex == 1) {
+    } else if (this.selectedIndex == 1) {
       return this._blank;
-    } else if(this.selectedIndex == 2) {
+    } else if (this.selectedIndex == 2) {
       return this._blank;
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Provider.of<ProfileViewModel>(context,listen: false).getProfile();
-    Provider.of<ChooseCompViewModel>(context,listen: false).getCompChoose(uniCode, majorCode, subject);
+    Provider.of<ProfileViewModel>(context, listen: false).getProfile();
+    Provider.of<ChooseCompViewModel>(context, listen: false)
+        .getCompChoose(uniCode, majorCode, subject);
     print('$uniCode - $majorCode - $subject');
+    testlist = new List();
+    testlist.add(99);
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var profileViewModel = Provider.of<ProfileViewModel>(context);
     var chooseCompViewModel = Provider.of<ChooseCompViewModel>(context);
 
@@ -77,18 +91,18 @@ class _OjtScreenState extends State<OjtScreen> {
     bool statusProfile = false;
     return Scaffold(
       body: SafeArea(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 30.0, right: 15.0, top: 30.0, bottom: 50.0),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+            Padding(
+                padding: const EdgeInsets.only(
+                    left: 30.0, right: 15.0, top: 30.0, bottom: 50.0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(
                         height: 30.0,
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 40.0),
                         child: Container(
@@ -98,16 +112,18 @@ class _OjtScreenState extends State<OjtScreen> {
                             itemBuilder: (BuildContext context, int index) {
                               return GestureDetector(
                                 onTap: () {
-                                    setState(() {
-                                      selectedIndex = index;
-                                    });
-                                  },
+                                  setState(() {
+                                    selectedIndex = index;
+                                  });
+                                },
                                 child: Container(
                                   height: 75.0,
                                   width: 70.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    color: index == selectedIndex ? Color(0xFF00003f) :  Color(0xFFffe5b4),
+                                    color: index == selectedIndex
+                                        ? Color(0xFF00003f)
+                                        : Color(0xFFffe5b4),
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -115,27 +131,36 @@ class _OjtScreenState extends State<OjtScreen> {
                                       Text(
                                         actionStep[index],
                                         style: TextStyle(
-                                            color: index == selectedIndex ? Colors.white : Color(0xFF00003f),
+                                            color: index == selectedIndex
+                                                ? Colors.white
+                                                : Color(0xFF00003f),
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.w600),
                                       ),
                                       Text(
                                         actionStepMapping[index],
                                         style: TextStyle(
-                                            color: index == selectedIndex ? Colors.white: Color(0xFF00003f),
+                                            color: index == selectedIndex
+                                                ? Colors.white
+                                                : Color(0xFF00003f),
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.w600),
                                       ),
                                       Icon(
-                                        statusStep[index] == true ? Icons.check : Icons.warning,
-                                        color: statusStep[index] == true ?  Colors.green: Colors.red,
+                                        statusStep[index] == true
+                                            ? Icons.check
+                                            : Icons.warning,
+                                        color: statusStep[index] == true
+                                            ? Colors.green
+                                            : Colors.red,
                                       )
                                     ],
                                   ),
                                 ),
                               );
                             },
-                            separatorBuilder: (BuildContext context, int index) {
+                            separatorBuilder:
+                                (BuildContext context, int index) {
                               return SizedBox(
                                 width: 25.0,
                               );
@@ -144,21 +169,25 @@ class _OjtScreenState extends State<OjtScreen> {
                           ),
                         ),
                       ),
+                      // FlatButton(
+                      //   onPressed: () => onDataChange(testlist),
+                      //   child: Text(testlist.toString()),
+                      // ),
                     ]
                 )
-              ),
-
-              selectedIndex == 0 ? UpdateProfileScreen() :
-              selectedIndex == 1 ? ChooseCompScreen(companiesList: chooseCompViewModel.compList,) : ResultScreen()
-
-
-
-            ]
-        )
-
-      ),
+            ),
+            selectedIndex == 0
+                ? UpdateProfileScreen()
+                : selectedIndex == 1
+                    ? ChooseCompScreen(
+                        appliedList: appliedList,
+                        stuId: profileViewModel.profile.code,
+                        companiesList: chooseCompViewModel.compList,
+                        onDataChange: onDataChange,
+                        updateProfileStatus: statusStep[0],
+                      )
+                    : ResultScreen()
+          ])),
     );
   }
-
 }
-
