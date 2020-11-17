@@ -10,6 +10,23 @@ final String image2 = "/v2.jpg";
 
 String image = image1;
 
+
+class CvScreen extends StatelessWidget {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      // theme: ThemeData(
+      //   primarySwatch: Colors.blue,
+      //   visualDensity: VisualDensity.adaptivePlatformDensity,
+      // ),
+        body: LoadFirbaseStorageImage(),
+        );
+  }
+}
+
 class LoadFirbaseStorageImage extends StatefulWidget {
   @override
   _LoadFirbaseStorageImageState createState() => _LoadFirbaseStorageImageState();
