@@ -124,6 +124,13 @@ class IndexPageState extends State<IndexPage> {
     });
   }
 
+  void onClickNoti(BuildContext context, List<Message> list) {
+    if (list.length >= 1) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => NotiPage(messageNoti: messages,)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var profileViewModel = Provider.of<ProfileViewModel>(context);
@@ -138,8 +145,7 @@ class IndexPageState extends State<IndexPage> {
             new IconButton(
                 icon: const Icon(Icons.notifications_active),
                 onPressed: () {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => NotiPage(messageNoti: messages,)));
+                  onClickNoti(context, messages);
                   // do something
                 })
           ],
