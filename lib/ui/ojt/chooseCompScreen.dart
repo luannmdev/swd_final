@@ -114,6 +114,12 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
     onDataChange(appliedList);
   }
 
+  updateSuccess(){
+    setState(() {
+
+    });
+  }
+
   @override
   void initState() {
     Provider.of<ChooseCompViewModel>(context,listen: false);
@@ -346,6 +352,10 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                             Provider.of<ChooseCompViewModel>(context,listen: false).applyJob(appList).then((res) =>
                             {
                               if (res) {
+                                Provider.of<ChooseCompViewModel>(context,listen: false).updateLastSent(appList[0].stuCode, appList.length).then((value) =>
+                                {
+                                  updateSuccess()
+                                }),
                                 Fluttertoast.showToast(
                                 msg: "Applied Success",
                                 toastLength: Toast.LENGTH_LONG,

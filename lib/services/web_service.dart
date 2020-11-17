@@ -158,4 +158,22 @@ class WebService {
     }
   }
 
+  Future<bool> updateLastSent(String stuCode, int lastSent) async {
+    print('update last send -stuCode:${stuCode} - lastSent:${lastSent}');
+    String url = Constants.UPDATE_PROFILE + '/$stuCode' + '/$lastSent';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String idToken = await prefs.getString('idToken');
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["authorization"] = "Bearer ${idToken}";
+    // print(json.encode(application.toJson()));
+    var response = await dio.put(url);
+    // var response = await dio.post(url, data: testData);
+    print(response.toString());
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
