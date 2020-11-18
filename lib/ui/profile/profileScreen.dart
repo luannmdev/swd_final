@@ -62,21 +62,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
   Widget _circleAvatar() {
     return FutureBuilder(
-      future: _future(),
-      builder: (context, snapshot) => Container(
-        width: MediaQuery.of(context).size.width / 2,
-        height: MediaQuery.of(context).size.width / 2,
-        padding: EdgeInsets.all(10.0),
-        margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 5),
-          shape: BoxShape.circle,
-          color: Colors.white,
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: snapshot.hasData ? NetworkImage(snapshot.data) : CircularProgressIndicator(),
-          ),
-    return FutureBuilder(
       future: getPhoto(),
       builder: (context, snapshot) =>Container(
         width: MediaQuery.of(context).size.width / 2,
