@@ -7,6 +7,7 @@ import 'package:swdprojectbackup/models/application.dart';
 import 'package:swdprojectbackup/models/companyChoose.dart';
 import 'package:swdprojectbackup/models/news.dart';
 import 'package:swdprojectbackup/models/profile.dart';
+import 'package:swdprojectbackup/models/university.dart';
 import 'package:swdprojectbackup/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -175,6 +176,16 @@ class WebService {
     } else {
       return false;
     }
+  }
+
+  Future<University> getUnibyCode(String code) async {
+    String url = Constants.GET_UNI_BY_ID + code+ "?_id="+ code;
+    http.Response response = await http.get(url);
+    if(response.statusCode == 200){
+      University uni = University.fromJson(jsonDecode(response.body));
+      return uni;
+    }
+    return null;
   }
 
 }

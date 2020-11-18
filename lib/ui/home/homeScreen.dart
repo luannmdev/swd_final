@@ -138,6 +138,7 @@ class IndexPageState extends State<IndexPage> {
     final key = GlobalKey<State<BottomNavigationBar>>();
     if (!profileViewModel.loadingStatus) {
       return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: GradientAppBar(
           // backgroundColor: Color(0xFFf75205),
           backgroundColorStart: Colors.cyan,

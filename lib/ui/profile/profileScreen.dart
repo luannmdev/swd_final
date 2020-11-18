@@ -37,6 +37,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController textController_gpa;
   TextEditingController textController_cvLink;
 
+  Future<String> getPhoto() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String photoUrl= prefs.getString('photoUrl');
+    return photoUrl;
+  }
+
   Set<int> listEdit = new Set<int>();
 
   Widget _buildCoverImage(Size screenSize) {
@@ -52,18 +58,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _circleAvatar() {
-    return Container(
-      width: MediaQuery.of(context).size.width / 2,
-      height: MediaQuery.of(context).size.width / 2,
-      padding: EdgeInsets.all(10.0),
-      margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey, width: 5),
-        shape: BoxShape.circle,
-        color: Colors.white,
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('images/avt.jpg'),
+    return FutureBuilder(
+      future: getPhoto(),
+      builder: (context, snapshot) =>Container(
+        width: MediaQuery.of(context).size.width / 2,
+        height: MediaQuery.of(context).size.width / 2,
+        padding: EdgeInsets.all(10.0),
+        margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 5),
+          shape: BoxShape.circle,
+          color: Colors.white,
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: snapshot.hasData ? NetworkImage(snapshot.data) : CircularProgressIndicator(),
+          ),
         ),
       ),
     );
@@ -342,6 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     textFieldFocus_fullname = FocusNode();
     textFieldFocus_phoneNo = FocusNode();
     textFieldFocus_gpa = FocusNode();
+    textFieldFocus_gpa = FocusNode();
     textFieldFocus_cvLink = FocusNode();
   }
 
@@ -349,6 +359,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           _buildCoverImage(screenSize),
@@ -357,7 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               _circleAvatar(),
               Container(
-                height: MediaQuery.of(context).size.height*0.54,
+                height: MediaQuery.of(context).size.height*0.50,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
