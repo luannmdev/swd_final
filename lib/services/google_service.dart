@@ -39,6 +39,8 @@ Future<bool> signInWithGoogle() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('idToken', idToken);
       await prefs.setString('email', user.email);
+    } else {
+      signOutGoogle();
     }
     return loginStatus;
   }
