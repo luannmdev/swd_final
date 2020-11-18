@@ -4,6 +4,7 @@ import 'package:swdprojectbackup/services/web_service.dart';
 import 'package:swdprojectbackup/ui/blank/blankScreen.dart';
 import 'package:swdprojectbackup/ui/news/newsListViewModel.dart';
 import 'package:swdprojectbackup/ui/news/newsScreen.dart';
+import 'package:swdprojectbackup/ui/noti/notiScreen.dart';
 import 'package:swdprojectbackup/ui/ojt/chooseCompViewModel.dart';
 import 'package:swdprojectbackup/ui/ojt/ojtScreen.dart';
 import 'package:swdprojectbackup/ui/profile/profileScreen.dart';
@@ -57,6 +58,8 @@ class IndexPageState extends State<IndexPage> {
   PageController pageController;
   int _selectedIndex = 0;
   Widget _myReport = BlankScreen();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final List<Message> messages = [];
   bool disableApplyJob;
 
   IndexPageState(this.appliedList);
@@ -73,6 +76,32 @@ class IndexPageState extends State<IndexPage> {
     pageController = PageController();
     Provider.of<ProfileViewModel>(context, listen: false).getProfile();
     super.initState();
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        final notification = message['notification'];
+        setState(() {
+          messages.add(Message(
+              title: notification['title'], body: notification['body']));
+        });
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+
+        final notification = message['data'];
+        setState(() {
+          messages.add(Message(
+            title: '${notification['title']}',
+            body: '${notification['body']}',
+          ));
+        });
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
   }
 
   @override
@@ -105,6 +134,13 @@ class IndexPageState extends State<IndexPage> {
   }
 
 
+  void onClickNoti(BuildContext context, List<Message> list) {
+    if (list.length >= 1) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => NotiPage(messageNoti: messages,)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var profileViewModel = Provider.of<ProfileViewModel>(context);
@@ -115,13 +151,17 @@ class IndexPageState extends State<IndexPage> {
     final key = GlobalKey<State<BottomNavigationBar>>();
     if (!profileViewModel.loadingStatus) {
       return Scaffold(
-        appBar: AppBar(
+        appBar: GradientAppBar(
+          // backgroundColor: Color(0xFFf75205),
+          backgroundColorStart: Colors.cyan,
+          backgroundColorEnd: Colors.indigo,
           automaticallyImplyLeading: false,
           title: Text("OJT PROJECT"),
           actions: <Widget>[
             new IconButton(
                 icon: const Icon(Icons.notifications_active),
                 onPressed: () {
+                  onClickNoti(context, messages);
                   // do something
                 })
           ],
@@ -222,8 +262,6 @@ class IndexPageState extends State<IndexPage> {
   //     }
   //   }
   // }
-
-
 
   Future<bool> _onWillPop() async {
     return (await showDialog(

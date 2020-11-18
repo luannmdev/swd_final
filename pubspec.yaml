@@ -39,7 +39,10 @@ dependencies:
   firebase_storage: ^5.0.1
   firebase_analytics: ^6.2.0
   image_picker: ^0.6.7+14
-
+  firebase_messaging: ^7.0.3
+  http: ^0.12.2
+  carousel_pro: ^1.0.0
+  gradient_app_bar: ^0.0.1
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +59,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - images/
     - images/avt.jpg
 
   # To add assets to your application, add an assets section, like this:

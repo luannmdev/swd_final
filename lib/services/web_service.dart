@@ -8,6 +8,7 @@ import 'package:swdprojectbackup/models/companyChoose.dart';
 import 'package:swdprojectbackup/models/news.dart';
 import 'package:swdprojectbackup/models/profile.dart';
 import 'package:swdprojectbackup/utils/constants.dart';
+import 'package:http/http.dart' as http;
 
 
 
@@ -18,7 +19,7 @@ class WebService {
   Future<bool> loginByEmail(String email) async {
     String url = Constants.LOGIN_BY_EMAIL + '/$email';
     print(url);
-    final response = await dio.get(url);
+    http.Response response = await http.get(url);
     if (response.statusCode == 200) {
       return true;
     } else {

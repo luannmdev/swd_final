@@ -1,3 +1,4 @@
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swdprojectbackup/models/application.dart';
@@ -88,16 +89,30 @@ class _NewsScreenState extends State<NewsScreen>
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 10,
-            top: 40,
-            right: 20,
-            bottom: 40,
+
+        Container(
+          height: 200,
+          margin: const EdgeInsets.only(bottom: 1),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(1))
           ),
-          child: Text(
-            'Hi, Test1, ${listViewModel.articlesList.length}',
-            style: TextStyle(fontSize: 50.0),
+          child: Carousel(
+            boxFit: BoxFit.cover,
+            autoplay: true,
+            autoplayDuration: Duration(seconds: 12),
+            animationCurve: Curves.fastOutSlowIn,
+            animationDuration: Duration(milliseconds: 1000),
+            dotSize: 0,
+            dotIncreasedColor: Color(0xFFFF335C),
+            dotBgColor: Colors.transparent,
+            dotPosition: DotPosition.topRight,
+            dotVerticalPadding: 10.0,
+            showIndicator: true,
+            indicatorBgPadding: 7.0,
+            images: [
+              AssetImage('images/TMA.png'),
+              AssetImage('images/Google.jpg'),
+            ],
           ),
         ),
         Expanded(
@@ -105,10 +120,10 @@ class _NewsScreenState extends State<NewsScreen>
             length: 3,
             child: Scaffold(
                 appBar: AppBar(
-                  backgroundColor: Colors.white70,
+                  backgroundColor: Color(0xFFf95906),
                   toolbarHeight: 50,
                   bottom: TabBar(
-                    labelColor: Colors.black,
+                    labelColor: Colors.white,
                     tabs: [
                       Tab(text: 'All'),
                       Tab(text: 'Your Saved'),
@@ -140,9 +155,8 @@ class _NewsScreenState extends State<NewsScreen>
         : ListView.builder(
             itemCount: listViewModel.articlesList.length,
             itemBuilder: (context, index) {
-
-              if (index >= (listViewModel.articlesList.length - 1)
-                  &&(listViewModel.articlesList.length == (pageCount*10))) {
+              if (index >= (listViewModel.articlesList.length - 1) &&
+                  (listViewModel.articlesList.length == (pageCount * 10))) {
                 print('next page');
                 pageCount++;
                 Provider.of<NewsListViewModel>(context, listen: false)
@@ -150,7 +164,7 @@ class _NewsScreenState extends State<NewsScreen>
                 listViewModel = Provider.of<NewsListViewModel>(context);
                 print('newsLength = ${listViewModel.articlesList.length}');
                 print('pageCount = $pageCount');
-                print('itemsCount*10 = ${pageCount*10}');
+                print('itemsCount*10 = ${pageCount * 10}');
               }
               return _buildRow(
                   listViewModel.articlesList[index].compCode +
@@ -170,23 +184,23 @@ class _NewsScreenState extends State<NewsScreen>
     return listViewModel.loadingStatus.toString() == 'LoadingStatus.searching'
         ? CircularProgressIndicator()
         : ListView.builder(
-        itemCount: appliedList.length,
-        itemBuilder: (context, index) {
-          listViewModel.articlesList.forEach((element) {
-            if (appliedList.contains(element.id)){
-              savedList.add(element);
-            }
-          });
-          return _buildRow(
-              savedList[index].compCode +
-                  ' need ' +
-                  '${savedList[index].quantity}' +
-                  ' in ' +
-                  savedList[index].name +
-                  ' - ' +
-                  savedList[index].position,
-              savedList[index].id);
-        });
+            itemCount: appliedList.length,
+            itemBuilder: (context, index) {
+              listViewModel.articlesList.forEach((element) {
+                if (appliedList.contains(element.id)) {
+                  savedList.add(element);
+                }
+              });
+              return _buildRow(
+                  savedList[index].compCode +
+                      ' need ' +
+                      '${savedList[index].quantity}' +
+                      ' in ' +
+                      savedList[index].name +
+                      ' - ' +
+                      savedList[index].position,
+                  savedList[index].id);
+            });
   }
 
   Widget _buildRow(String title, int id) {

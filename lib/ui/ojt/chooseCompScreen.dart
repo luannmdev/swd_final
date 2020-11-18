@@ -199,6 +199,7 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
             ),
           ),
           Container(
+            padding: const EdgeInsets.only(top: 30),
             child: Center(
               child: Column(
                 children: <Widget>[
@@ -207,11 +208,11 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                     child: Row(
                       children: [
                         Text(
-                          'Company 1 ',
+                          'Option 1 ',
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                         Container(
-                          padding: const EdgeInsets.only(left: 0.0),
+                          padding: const EdgeInsets.only(left: 10.0),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
@@ -241,11 +242,11 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                     child: Row(
                       children: [
                         Text(
-                          'Company 2 ',
+                          'Option 2 ',
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                         Container(
-                          padding: const EdgeInsets.only(left: 0.0),
+                          padding: const EdgeInsets.only(left: 10.0),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
@@ -275,11 +276,11 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                     child: Row(
                       children: [
                         Text(
-                          'Company 3 ',
+                          'Option 3 ',
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                         Container(
-                          padding: const EdgeInsets.only(left: 0.0),
+                          padding: const EdgeInsets.only(left: 10.0),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
@@ -304,8 +305,8 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                   //   'Selected: ${_selectedCompany3.comName} - ${_selectedCompany3.comMain}',
                   //   style: TextStyle(color: Colors.white, fontSize: 18),
                   // ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(80.0, 5.0, 80.0, 5.0),
+                  Container(height: 50,
+                    margin: const EdgeInsets.fromLTRB(100, 20, 100, 0),
                     child: RaisedButton(
 
                         disabledColor: Colors.grey,
