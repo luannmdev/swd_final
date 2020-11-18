@@ -22,6 +22,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final Profile profile;
 
+
   _ProfileScreenState(this.profile);
 
   FocusNode textFieldFocus_fullname;
@@ -50,20 +51,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
+  Future<String> _future() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.getString('photoUrl');
+  }
   Widget _circleAvatar() {
-    return Container(
-      width: MediaQuery.of(context).size.width / 2,
-      height: MediaQuery.of(context).size.width / 2,
-      padding: EdgeInsets.all(10.0),
-      margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey, width: 5),
-        shape: BoxShape.circle,
-        color: Colors.white,
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('images/avt.jpg'),
+    return FutureBuilder(
+      future: _future(),
+      builder: (context, snapshot) => Container(
+        width: MediaQuery.of(context).size.width / 2,
+        height: MediaQuery.of(context).size.width / 2,
+        padding: EdgeInsets.all(10.0),
+        margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 5),
+          shape: BoxShape.circle,
+          color: Colors.white,
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: snapshot.hasData ? NetworkImage(snapshot.data) : CircularProgressIndicator(),
+          ),
         ),
       ),
     );
@@ -248,9 +255,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 textController_gpa.text != ''
                     ? profile.gpa = double.parse(textController_gpa.text)
                     : profile.gpa = 0;
-                textController_phoneNo.text != ''
-                    ? profile.phoneNo = textController_phoneNo.text
-                    : {};
+                profile.phoneNo = textController_phoneNo.text;
                 textController_cvLink.text != 'null'
                     ? profile.cv = textController_cvLink.text
                     : {};
@@ -343,6 +348,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     textFieldFocus_phoneNo = FocusNode();
     textFieldFocus_gpa = FocusNode();
     textFieldFocus_cvLink = FocusNode();
+
+
   }
 
   @override

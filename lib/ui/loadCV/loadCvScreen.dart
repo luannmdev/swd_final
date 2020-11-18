@@ -6,7 +6,7 @@ import 'package:swdprojectbackup/services/fire_storage_service.dart';
 final Color yellow = Color(0xfffbc31b);
 final Color orange = Color(0xfffb6900);
 final String image1 = "images/cv2.jpg";
-final String image2 = "images/cv1.png";
+// final String image2 = "images/cv1.png";
 
 String image = image1;
 
@@ -42,7 +42,7 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage> {
                     bottomLeft: Radius.circular(50.0),
                     bottomRight: Radius.circular(50.0)),
                 gradient: LinearGradient(
-                    //colors: [orange, yellow],
+                    colors: [orange, yellow],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight)),
           ),
@@ -124,20 +124,20 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage> {
                 gradient: LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
-                    //colors: [yellow, orange]
+                    colors: [yellow, orange]
                 ),
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(
               onPressed: () {
                 //fetch another image
-                setState(() {
-                  final _random = new Random();
-                  var imageList = [image1, image2];
-                  image = imageList[_random.nextInt(imageList.length)];
-                });
+                // setState(() {
+                //   final _random = new Random();
+                //   var imageList = [image1, image2];
+                //   image = imageList[_random.nextInt(imageList.length)];
+                // });
               },
               child: Text(
-                "Load Image",
+                "Upload CV",
                 style: TextStyle(fontSize: 20),
               ),
             ),
