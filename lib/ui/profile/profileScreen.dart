@@ -25,11 +25,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _ProfileScreenState(this.profile);
 
   FocusNode textFieldFocus_fullname;
+
   // FocusNode textFieldFocus_email;
   FocusNode textFieldFocus_phoneNo;
   FocusNode textFieldFocus_gpa;
   FocusNode textFieldFocus_cvLink;
   TextEditingController textController_fullname;
+
   // TextEditingController textController_email;
   TextEditingController textController_phoneNo;
   TextEditingController textController_gpa;
@@ -37,7 +39,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Set<int> listEdit = new Set<int>();
 
-
+  Widget _buildCoverImage(Size screenSize) {
+    return Container(
+      height: screenSize.height / 3.5,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('images/cover.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
 
   Widget _circleAvatar() {
     return Container(
@@ -61,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       {id,
       String hintText,
       IconData icon,
-        String text,
+      String text,
       bool editable,
       FocusNode focusNode,
       TextEditingController controller}) {
@@ -78,21 +90,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Icon(icon,color: Theme.of(context).primaryColor,),
+            child: Icon(
+              icon,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
           Container(
             width: 80.0,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(0,0,0,0),
-              child: Text(text, style: TextStyle(color: Colors.blueGrey,
-                  fontWeight: FontWeight.bold,)
-                    ),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: Text(text,
+                  style: TextStyle(
+                    color: Colors.blueGrey,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
           ),
-
           Expanded(
             child: new TextField(
-              keyboardType: ((id == 3)||(id == 2))? TextInputType.number: TextInputType.text,
+              keyboardType: ((id == 3) || (id == 2))
+                  ? TextInputType.number
+                  : TextInputType.text,
               focusNode: focusNode,
               readOnly: !listEdit.contains(textId),
               controller: controller,
@@ -104,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       10,
                     ),
                   ),
-                  hintText:  hintText,
+                  hintText: hintText,
                   hintStyle: TextStyle(
                     letterSpacing: 2,
                     color: Colors.blueGrey,
@@ -152,13 +170,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               controller: textController_fullname),
           SizedBox(height: 3),
           _textFormField(
-              id: 1,
-              hintText: profile.email == null ? 'E-mail' : profile.email,
-              icon: Icons.mail,
-              text: 'Email',
-              editable: false,),
-              // focusNode: textFieldFocus_email,
-              // controller: textController_email),
+            id: 1,
+            hintText: profile.email == null ? 'E-mail' : profile.email,
+            icon: Icons.mail,
+            text: 'Email',
+            editable: false,
+          ),
+          // focusNode: textFieldFocus_email,
+          // controller: textController_email),
           SizedBox(height: 3),
           _textFormField(
               id: 2,
@@ -247,8 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       timeInSecForIosWeb: 1,
                       backgroundColor: Colors.blue,
                       textColor: Colors.white,
-                      fontSize: 16.0
-                  );
+                      fontSize: 16.0);
                 }
               },
             ),
@@ -259,47 +277,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buttonLogout() {
-    return RaisedButton(
-      onPressed: () {
-        signOutGoogle();
-        Fluttertoast.showToast(
-            msg: "Logout",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.yellow,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) {
-          return LoginScreen();
-        }), ModalRoute.withName('/'));
-      },
-      color: Colors.transparent,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+    return Container(
+      height: 50,
+      width: 150,
+      margin: const EdgeInsets.only(bottom: 10),
+      child: RaisedButton(
+        onPressed: () {
+          signOutGoogle();
+          Fluttertoast.showToast(
+              msg: "Logout",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.yellow,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) {
+            return LoginScreen();
+          }), ModalRoute.withName('/'));
+        },
+        color: Colors.redAccent,
         child: Text(
           'Sign Out',
-          style: TextStyle(fontSize: 15, color: Colors.red),
+          style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 
   Widget _buttonCv() {
-    return RaisedButton(
-      onPressed: () {
-        Navigator.of(context).push(
-            new MaterialPageRoute(
-                builder: (context) => CvScreen()));
-      },
-      color: Colors.blue,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+    return Container(
+      margin: const EdgeInsets.only(top: 10,bottom: 10),
+      width: 150,
+      height: 50,
+      child: RaisedButton(
+        onPressed: () {
+          Navigator.of(context)
+              .push(new MaterialPageRoute(builder: (context) => CvScreen()));
+        },
+        color: Colors.blue,
         child: Text(
           'Update CV',
-          style: TextStyle(fontSize: 15, color: Colors.white),
+          style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -310,10 +330,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // TODO: implement initState
     super.initState();
     Provider.of<ProfileViewModel>(context, listen: false).getProfile();
-    textController_fullname = new TextEditingController(text: '${profile.fullname}');
-    textController_phoneNo = new TextEditingController(text: '${profile.phoneNo}');
+    textController_fullname =
+        new TextEditingController(text: '${profile.fullname}');
+    textController_phoneNo =
+        new TextEditingController(text: '${profile.phoneNo}');
     textController_gpa = new TextEditingController(text: '${profile.gpa}');
-    textController_cvLink = profile.cv == 'null' ? new TextEditingController()
+    textController_cvLink = profile.cv == 'null'
+        ? new TextEditingController()
         : new TextEditingController(text: '${profile.cv}');
 
     textFieldFocus_fullname = FocusNode();
@@ -324,20 +347,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
-        alignment: Alignment.center,
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _circleAvatar(),
-                _textFormFieldCalling(),
-                _buttonCv(),
-                _buttonLogout(),
-              ],
-            ),
+          _buildCoverImage(screenSize),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _circleAvatar(),
+              Container(
+                height: MediaQuery.of(context).size.height*0.54,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _textFormFieldCalling(),
+                      _buttonCv(),
+                      _buttonLogout(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

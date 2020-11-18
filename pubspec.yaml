@@ -42,6 +42,7 @@ dependencies:
   firebase_messaging: ^7.0.3
 
   carousel_pro: ^1.0.0
+  gradient_app_bar: ^0.0.1
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +59,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - images/
     - images/avt.jpg
 
   # To add assets to your application, add an assets section, like this:

@@ -105,9 +105,10 @@ class _OjtScreenState extends State<OjtScreen>
                         height: 30.0,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 40.0),
+                        padding: const EdgeInsets.only(left: 10.0),
                         child: Container(
-                          height: 90.0,
+                          height: 120.0,
+                          width: MediaQuery.of(context).size.width,
                           child: ListView.separated(
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
@@ -118,8 +119,8 @@ class _OjtScreenState extends State<OjtScreen>
                                   });
                                 },
                                 child: Container(
-                                  height: 75.0,
-                                  width: 70.0,
+                                  height: 100.0,
+                                  width: 90.0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     color: index == selectedIndex

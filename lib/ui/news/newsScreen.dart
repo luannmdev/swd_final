@@ -64,27 +64,16 @@ class _NewsScreenState extends State<NewsScreen>
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Container(
-          height: 50,
-          padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Hi, Test1, ${listViewModel.articlesList.length}',
-                style: TextStyle(fontSize: 30.0),
-              ),
-            ],
-          ),
-        ),
+
         Container(
           height: 200,
+          margin: const EdgeInsets.only(bottom: 1),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.vertical(top: Radius.circular(1))
           ),
           child: Carousel(
             boxFit: BoxFit.cover,
-            autoplay: false,
+            autoplay: true,
             autoplayDuration: Duration(seconds: 12),
             animationCurve: Curves.fastOutSlowIn,
             animationDuration: Duration(milliseconds: 1000),
@@ -98,7 +87,6 @@ class _NewsScreenState extends State<NewsScreen>
             images: [
               AssetImage('images/TMA.png'),
               AssetImage('images/Google.jpg'),
-
             ],
           ),
         ),
@@ -107,7 +95,7 @@ class _NewsScreenState extends State<NewsScreen>
             length: 3,
             child: Scaffold(
                 appBar: AppBar(
-                  backgroundColor: Color(0xFFea2b02),
+                  backgroundColor: Color(0xFFf95906),
                   toolbarHeight: 50,
                   bottom: TabBar(
                     labelColor: Colors.white,
@@ -194,7 +182,7 @@ class _NewsScreenState extends State<NewsScreen>
     return Container(
       margin: const EdgeInsets.fromLTRB(1, 1, 1, 1),
       decoration: BoxDecoration(color: Colors.white,
-          // borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: BorderRadius.only(topRight: Radius.circular(30), bottomRight: Radius.circular(30)),
           boxShadow: [
             BoxShadow(
               color: Color(0x88999999),
@@ -207,6 +195,7 @@ class _NewsScreenState extends State<NewsScreen>
           title,
           style: const TextStyle(fontSize: 18.0),
         ),
+
         trailing: new Icon(
           Icons.read_more,
           color: Colors.greenAccent,
