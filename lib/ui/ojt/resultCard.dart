@@ -9,8 +9,8 @@ class ResultCard extends StatelessWidget {
   final Color secondCircle;
   final int statusCard;
 
-  List<String> status = ['Processing','Pass','Not Pass'];
-  List<Color> colorStatus = [Colors.blue,Colors.green,Colors.deepOrange];
+  List<String> status = ['Processing','Pass','Not Pass','-'];
+  List<Color> colorStatus = [Colors.blue,Colors.green,Colors.deepOrange,Colors.deepOrange];
 
   ResultCard({this.number, this.item, this.backgrClr, this.firstCircle, this.secondCircle, this.statusCard});
 

@@ -49,8 +49,7 @@ class WebService {
     var response = await dio.get(url);
     if (response.statusCode == 200) {
       Iterable result = response.data;
-      Iterable list = result;
-      return list.map((article) => News.fromJson(article)).toList();
+      return result.map((article) => News.fromJson(article)).toList();
     } else {
       throw Exception("Failled to get news");
     }
@@ -173,6 +172,25 @@ class WebService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<List<Application>> getAppLastSent(String stuCode, int lastSent) async {
+    print('get app last send -stuCode:${stuCode} - lastSent:${lastSent}');
+    String url = Constants.APPLY_JOB + '/$lastSent' + '/$stuCode';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String idToken = await prefs.getString('idToken');
+    dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers["authorization"] = "Bearer ${idToken}";
+    // print(json.encode(application.toJson()));
+    var response = await dio.get(url);
+    // var response = await dio.post(url, data: testData);
+    print(response.toString());
+    if (response.statusCode == 200) {
+      Iterable result = response.data;
+      return result.map((app) => Application.fromJson(app)).toList();
+    } else {
+      throw Exception("Failled to get profile");
     }
   }
 

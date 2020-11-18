@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:swdprojectbackup/models/application.dart';
+import 'package:swdprojectbackup/services/web_service.dart';
 import 'package:swdprojectbackup/ui/news/newsListViewModel.dart';
 import 'package:swdprojectbackup/ui/newsdetail/newsDetailScreen.dart';
 import 'package:swdprojectbackup/ui/newsdetail/newsDetailViewModel.dart';
@@ -8,48 +10,72 @@ import 'package:swdprojectbackup/ui/profile/profileViewModel.dart';
 import 'newsViewModel.dart';
 
 class NewsScreen extends StatefulWidget {
+  bool disableApplyJob;
   List<int> appliedList;
   String _uniCode;
   String _majorCode;
   String _subject;
+  String _code;
   final Function(List<int>) onDataChange;
+  final int lastSent;
 
-  NewsScreen(appliedList, @required uniCode, @required majorCode, @required subject, this.onDataChange) {
+  NewsScreen(disableApplyJob,appliedList, @required uniCode, @required majorCode, @required subject, code, this.onDataChange,this.lastSent) {
+    this.disableApplyJob = disableApplyJob;
     this.appliedList = appliedList;
     this._subject = subject;
     this._uniCode = uniCode;
     this._majorCode = majorCode;
+    this._code = code;
   }
 
   @override
   _NewsScreenState createState() =>
-      _NewsScreenState(appliedList,_uniCode, _majorCode, _subject, onDataChange);
+      _NewsScreenState(disableApplyJob,appliedList,_uniCode, _majorCode, _subject,_code, onDataChange,lastSent);
 }
 
 class _NewsScreenState extends State<NewsScreen>
     with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;
-
+  bool get wantKeepAlive => false;
+  bool disableApplyJob;
   final Function(List<int>) onDataChange;
+  final int lastSent;
   List<int> appliedList;
   String _uniCode;
   String _majorCode;
   String _subject;
+  String _code;
   int pageCount = 1;
 
-  _NewsScreenState(appliedList,@required uniCode, @required majorCode, @required subject, this.onDataChange) {
+  _NewsScreenState(disableApplyJob,appliedList,@required uniCode, @required majorCode, @required subject, code, this.onDataChange,this.lastSent) {
+    this.disableApplyJob = disableApplyJob;
     this.appliedList = appliedList;
     this._uniCode = uniCode;
     this._majorCode = majorCode;
     this._subject = subject;
+    this._code = code;
+  }
+
+  void updateListApp(List<Application> list) {
+    if((disableApplyJob) && (list.length > 0))
+    setState(() {
+      appliedList.clear();
+      list.forEach((element) {
+        appliedList.add(element.jobId);
+      });
+      onDataChange(appliedList);
+      print('app list updated: ${appliedList.toString()}');
+    });
   }
 
   @override
   void initState() {
-
+    print('NEWSSCREEN DISABLE = $disableApplyJob');
     Provider.of<NewsListViewModel>(context, listen: false)
         .topHeadlines(pageCount, _uniCode, _majorCode, _subject);
+    _getListApplicationLastSent(_code, lastSent).then((list) => {
+      updateListApp(list)
+    });
     super.initState();
   }
 
@@ -184,6 +210,7 @@ class _NewsScreenState extends State<NewsScreen>
                         ),
                       ],
                       child: new NewsDetailScreen(
+                        disableApplyJob: disableApplyJob,
                         appliedList: appliedList,
                         idNews: id,
                       ))),
@@ -192,4 +219,7 @@ class _NewsScreenState extends State<NewsScreen>
       },
     );
   }
+}
+Future<List<Application>> _getListApplicationLastSent(String stuCode, int lastSent) async{
+  return await WebService().getAppLastSent(stuCode, lastSent);
 }

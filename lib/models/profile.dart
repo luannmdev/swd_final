@@ -12,6 +12,7 @@ class Profile {
    String uniCode;
    String majorName;
    String graduation;
+   int lastSent;
 
   Profile({
     @required this.code,
@@ -23,7 +24,8 @@ class Profile {
     @required this.majorCode,
     @required this.uniCode,
     @required this.majorName,
-    @required this.graduation
+    @required this.graduation,
+    @required this.lastSent
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
@@ -37,7 +39,8 @@ class Profile {
       majorCode: json['majorCode'],
       uniCode: json['uniCode'],
       majorName: json['name'],
-      graduation: json['graduation']
+      graduation: json['graduation'],
+        lastSent: json['lastSent']
     );
   }
 
@@ -52,6 +55,7 @@ class Profile {
           "majorCode": this.majorCode,
           "uniCode": this.uniCode,
           "name": this.majorName,
-          "graduation": this.graduation
+          "graduation": this.graduation,
+          "lastSent": this.lastSent
       };
 }

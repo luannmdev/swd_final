@@ -10,9 +10,12 @@ import 'package:swdprojectbackup/ui/news/newsViewModel.dart';
 import 'package:swdprojectbackup/ui/newsdetail/newsDetailViewModel.dart';
 
 class NewsDetailScreen extends StatelessWidget {
+  final bool disableApplyJob;
   final List<int> appliedList;
   final int idNews;
-  NewsDetailScreen({Key key, this.appliedList,@required this.idNews}) : super(key: key);
+  NewsDetailScreen(
+      {Key key, this.disableApplyJob, this.appliedList, @required this.idNews})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,39 +26,47 @@ class NewsDetailScreen extends StatelessWidget {
         //   visualDensity: VisualDensity.adaptivePlatformDensity,
         // ),
         body: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              create: (_) => NewsListViewModel(),
-            )
-          ],
-          child: NewsDetailPage(appliedList: appliedList,idNews: idNews),
-        ));
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => NewsListViewModel(),
+        )
+      ],
+      child: NewsDetailPage(
+          disableApplyJob: disableApplyJob,
+          appliedList: appliedList,
+          idNews: idNews),
+    ));
   }
 }
 
 class NewsDetailPage extends StatefulWidget {
+  final bool disableApplyJob;
   final List<int> appliedList;
   final int idNews;
-  NewsDetailPage({Key key, this.appliedList, @required this.idNews}) : super(key: key);
+  NewsDetailPage(
+      {Key key, this.disableApplyJob, this.appliedList, @required this.idNews})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return NewsDetailPageState(appliedList,idNews);
+    return NewsDetailPageState(disableApplyJob, appliedList, idNews);
   }
 }
 
 class NewsDetailPageState extends State<NewsDetailPage> {
+  final bool disableApplyJob;
   List<int> appliedList;
   final int idNews;
   String textButton = 'Apply Job';
   Color colorButton = Colors.blue;
-  NewsDetailPageState(this.appliedList,this.idNews);
+  NewsDetailPageState(this.disableApplyJob, this.appliedList, this.idNews);
 
   @override
   void initState() {
     Provider.of<NewsDetailViewModel>(context, listen: false)
         .getNewsDetailById(idNews);
     super.initState();
+    print('DETAIL DISABLE = $disableApplyJob');
   }
 
   @override
@@ -69,7 +80,7 @@ class NewsDetailPageState extends State<NewsDetailPage> {
         leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
-              Navigator.pop(context,appliedList);
+              Navigator.pop(context, appliedList);
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(builder: (context) => HomeScreen(appliedList: appliedList,)),
@@ -82,8 +93,9 @@ class NewsDetailPageState extends State<NewsDetailPage> {
     );
   }
 
-  Widget _buttonRemoveJob(NewsViewModel article){
+  Widget _buttonRemoveJob(NewsViewModel article) {
     return RaisedButton(
+      disabledColor: Colors.grey,
       color: Colors.orange,
       child: Center(
         child: Text(
@@ -94,27 +106,28 @@ class NewsDetailPageState extends State<NewsDetailPage> {
           ),
         ),
       ),
-      onPressed: () {
-        print('remove job');
-        setState(() {
-          appliedList.remove(article.id);
-        });
-        Fluttertoast.showToast(
-            msg: "Removed from applies list",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.orange,
-            textColor: Colors.white,
-            fontSize: 16.0
-        );
-
-      },
+      onPressed: disableApplyJob
+          ? null
+          : () {
+              print('remove job');
+              setState(() {
+                appliedList.remove(article.id);
+              });
+              Fluttertoast.showToast(
+                  msg: "Removed from applies list",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.orange,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            },
     );
   }
 
-  Widget _buttonAddJob(NewsViewModel article){
+  Widget _buttonAddJob(NewsViewModel article) {
     return RaisedButton(
+      disabledColor: Colors.grey,
       color: Colors.blue,
       child: Center(
         child: Text(
@@ -125,34 +138,34 @@ class NewsDetailPageState extends State<NewsDetailPage> {
           ),
         ),
       ),
-      onPressed: () {
-        print('apply job ${appliedList.length}');
-        if (appliedList.length == 3) {
-          Fluttertoast.showToast(
-              msg: "Your list job has been full - ${appliedList.length}/3",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.blue,
-              textColor: Colors.orange,
-              fontSize: 16.0
-          );
-        } else if (!appliedList.contains(article)) {
-          setState(() {
-            appliedList.add(article.id);
-          });
-          Fluttertoast.showToast(
-              msg: "Added to applies list - ${appliedList.length}/3",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.blue,
-              textColor: Colors.white,
-              fontSize: 16.0
-          );
-        }
-
-      },
+      onPressed: disableApplyJob
+          ? null
+          : () {
+              print('apply job ${appliedList.length}');
+              if (appliedList.length == 3) {
+                Fluttertoast.showToast(
+                    msg:
+                        "Your list job has been full - ${appliedList.length}/3",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.blue,
+                    textColor: Colors.orange,
+                    fontSize: 16.0);
+              } else if (!appliedList.contains(article)) {
+                setState(() {
+                  appliedList.add(article.id);
+                });
+                Fluttertoast.showToast(
+                    msg: "Added to applies list - ${appliedList.length}/3",
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.blue,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              }
+            },
     );
   }
 
@@ -179,11 +192,12 @@ class NewsDetailPageState extends State<NewsDetailPage> {
               textAlign: TextAlign.left,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 5.0, right: 5.0,top: 10.0),
+              padding: const EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0),
               child: Text(
                 viewModel.article.description,
-                style:
-                const TextStyle(fontSize: 20.0, ),
+                style: const TextStyle(
+                  fontSize: 20.0,
+                ),
                 textAlign: TextAlign.left,
               ),
             ),
@@ -199,66 +213,60 @@ class NewsDetailPageState extends State<NewsDetailPage> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children:[
-                      Row(
-                          children:[
-                            Text(
-                              'Benefit: ',
-                              style:const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              viewModel.article.benefit,
-                              style:const TextStyle(fontSize: 18.0),
-                              textAlign: TextAlign.left,
-                            ),
-                          ]
+                  child: Column(children: [
+                    Row(children: [
+                      Text(
+                        'Benefit: ',
+                        style: const TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
                       ),
-                      Row(
-                          children:[
-                            Text(
-                              'Date start: ',
-                              style:const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              viewModel.article.startDate,
-                              style:const TextStyle(fontSize: 18.0),
-                              textAlign: TextAlign.left,
-                            ),
-                          ]
+                      Text(
+                        viewModel.article.benefit,
+                        style: const TextStyle(fontSize: 18.0),
+                        textAlign: TextAlign.left,
                       ),
-                      Row(
-                          children:[
-                            Text(
-                              'Date end: ',
-                              style:const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              viewModel.article.endDate,
-                              style:const TextStyle(fontSize: 18.0),
-                              textAlign: TextAlign.left,
-                            ),
-                          ]
+                    ]),
+                    Row(children: [
+                      Text(
+                        'Date start: ',
+                        style: const TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
                       ),
-                      Row(
-                          children:[
-                            Text(
-                              'Applied List: ',
-                              style:const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              appliedList.toString(),
-                              style:const TextStyle(fontSize: 18.0),
-                              textAlign: TextAlign.left,
-                            ),
-                          ]
+                      Text(
+                        viewModel.article.startDate,
+                        style: const TextStyle(fontSize: 18.0),
+                        textAlign: TextAlign.left,
                       ),
-                    ]
-                  ),
+                    ]),
+                    Row(children: [
+                      Text(
+                        'Date end: ',
+                        style: const TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
+                      Text(
+                        viewModel.article.endDate,
+                        style: const TextStyle(fontSize: 18.0),
+                        textAlign: TextAlign.left,
+                      ),
+                    ]),
+                    Row(children: [
+                      Text(
+                        'Applied List: ',
+                        style: const TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
+                      Text(
+                        appliedList.toString(),
+                        style: const TextStyle(fontSize: 18.0),
+                        textAlign: TextAlign.left,
+                      ),
+                    ]),
+                  ]),
                 ),
               ),
             ),
@@ -266,7 +274,8 @@ class NewsDetailPageState extends State<NewsDetailPage> {
               margin: const EdgeInsets.only(top: 10.0),
               height: 55,
               width: 150,
-              child: appliedList.contains(viewModel.article.id) ? _buttonRemoveJob(viewModel.article)
+              child: appliedList.contains(viewModel.article.id)
+                  ? _buttonRemoveJob(viewModel.article)
                   : _buttonAddJob(viewModel.article),
             ),
           ],

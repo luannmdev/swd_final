@@ -10,24 +10,25 @@ import 'chooseCompScreen.dart';
 
 class OjtScreen extends StatefulWidget {
   final List<int> appliedList;
-
+  final bool disableApplyJob;
 
   final String uniCode;
   final String majorCode;
   final String subject;
   final Function(List<int>) onDataChange;
+  final Function(bool) onStatusChange;
 
-  OjtScreen({this.appliedList, this.uniCode, this.majorCode, this.subject,this.onDataChange});
+  OjtScreen({this.appliedList, this.uniCode, this.majorCode, this.subject,this.onDataChange, this.onStatusChange, this.disableApplyJob,});
 
   @override
   _OjtScreenState createState() =>
-      _OjtScreenState(onDataChange: onDataChange,appliedList: this.appliedList, uniCode: uniCode, majorCode: majorCode, subject: subject);
+      _OjtScreenState(disableApplyJob:disableApplyJob,onDataChange: onDataChange,appliedList: this.appliedList, uniCode: uniCode, majorCode: majorCode, subject: subject,onStatusChange:onStatusChange);
 }
 
 class _OjtScreenState extends State<OjtScreen>
     with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 
   final List<int> appliedList;
   List<int> testlist;
@@ -36,8 +37,10 @@ class _OjtScreenState extends State<OjtScreen>
   final String majorCode;
   final String subject;
   final Function(List<int>) onDataChange;
+  final Function(bool) onStatusChange;
+  final bool disableApplyJob;
 
-  _OjtScreenState({this.appliedList, this.uniCode, this.majorCode, this.subject,this.onDataChange});
+  _OjtScreenState({this.disableApplyJob,this.onStatusChange,this.appliedList, this.uniCode, this.majorCode, this.subject,this.onDataChange});
 
   int selectedIndex = 0;
   List<String> actionStep = ['Update', 'Choose', 'The'];
@@ -66,6 +69,11 @@ class _OjtScreenState extends State<OjtScreen>
     print('$uniCode - $majorCode - $subject');
     testlist = new List();
     testlist.add(99);
+    print('OJT SCREEN - DISABLE: $disableApplyJob');
+    if (disableApplyJob) {
+      statusStep[0] = true;
+      statusStep[1] = true;
+    }
   }
 
   @override
@@ -186,6 +194,8 @@ class _OjtScreenState extends State<OjtScreen>
                         companiesList: chooseCompViewModel.compList,
                         onDataChange: onDataChange,
                         updateProfileStatus: statusStep[0],
+                        onStatusChange: onStatusChange,
+                        disableApplyJob: disableApplyJob,
                       )
                     : TheResultScreen()
           ])),

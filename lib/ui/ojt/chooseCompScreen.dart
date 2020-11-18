@@ -17,13 +17,15 @@ class ChooseCompScreen extends StatefulWidget {
   final String stuId;
   final List<CompanyChoose> companiesList;
   final Function(List<int>) onDataChange;
+  final Function(bool) onStatusChange;
   final bool updateProfileStatus;
+  final bool disableApplyJob;
 
-  ChooseCompScreen({this.updateProfileStatus,this.appliedList, this.stuId, this.companiesList,this.onDataChange});
+  ChooseCompScreen({this.updateProfileStatus,this.appliedList, this.stuId, this.companiesList,this.onDataChange, this.onStatusChange, this.disableApplyJob});
 
   @override
   _ChooseCompScreenState createState() => _ChooseCompScreenState(
-      updateProfileStatus: updateProfileStatus,onDataChange: onDataChange, appliedList: this.appliedList,stuId: this.stuId, companiesList: this.companiesList);
+     disableApplyJob: disableApplyJob,onStatusChange:onStatusChange, updateProfileStatus: updateProfileStatus,onDataChange: onDataChange, appliedList: this.appliedList,stuId: this.stuId, companiesList: this.companiesList);
 }
 
 class _ChooseCompScreenState extends State<ChooseCompScreen> {
@@ -32,9 +34,13 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
   final String stuId;
   final List<CompanyChoose> companiesList;
   final Function(List<int>) onDataChange;
+  final Function(bool) onStatusChange;
   final bool updateProfileStatus;
+  bool disableApplyJob;
 
-  _ChooseCompScreenState({this.updateProfileStatus,this.onDataChange, this.appliedList, this.stuId, this.companiesList});
+  bool disable = false;
+
+  _ChooseCompScreenState({this.disableApplyJob,this.onStatusChange,this.updateProfileStatus,this.onDataChange, this.appliedList, this.stuId, this.companiesList});
 
   List<DropdownMenuItem<CompanyChoose>> _dropdownMenuItem1;
   CompanyChoose _selectedCompany1;
@@ -116,8 +122,11 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
 
   updateSuccess(){
     setState(() {
-
+      print('disable = true;');
+      disable = true;
+      disableApplyJob = true;
     });
+    onStatusChange(disable);
   }
 
   @override
@@ -166,9 +175,11 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
         });
       }
     }
-    testlist = new List();
-    testlist.add(88);
-    testlist.add(77);
+    print('CHOSSE COMP - DISABLE: $disableApplyJob');
+    if (disableApplyJob == true){
+      disable = disableApplyJob;
+    }
+
     super.initState();
   }
 
@@ -207,8 +218,9 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                           child: DropdownButton(
                             value: _selectedCompany1,
                             items: _dropdownMenuItem1,
+                            disabledHint: Text('Company: ' + _selectedCompany1.compCode + ', Main: ' + _selectedCompany1.position),
                             style: TextStyle(color: Colors.black, fontSize: 12),
-                            onChanged: onChangeDropdownItem1,
+                            onChanged: disable ? null : onChangeDropdownItem1,
                             underline: Container(
                               height: 1,
                             ),
@@ -240,8 +252,9 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                           child: DropdownButton(
                             value: _selectedCompany2,
                             items: _dropdownMenuItem2,
+                            disabledHint: Text('Company: ' + _selectedCompany2.compCode + ', Main: ' + _selectedCompany2.position),
                             style: TextStyle(color: Colors.black, fontSize: 12),
-                            onChanged: onChangeDropdownItem2,
+                            onChanged: disable ? null : onChangeDropdownItem2,
                             underline: Container(
                               height: 1,
                             ),
@@ -273,8 +286,9 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                           child: DropdownButton(
                             value: _selectedCompany3,
                             items: _dropdownMenuItem3,
+                            disabledHint: Text('Company: ' + _selectedCompany3.compCode + ', Main: ' + _selectedCompany3.position),
                             style: TextStyle(color: Colors.black, fontSize: 12),
-                            onChanged: onChangeDropdownItem3,
+                            onChanged: disable ? null : onChangeDropdownItem3,
                             underline: Container(
                               height: 1,
                             ),
@@ -293,6 +307,8 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(80.0, 5.0, 80.0, 5.0),
                     child: RaisedButton(
+
+                        disabledColor: Colors.grey,
                         color: Theme.of(context).primaryColor,
                         child: Center(
                           child: Text(
@@ -303,7 +319,7 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                             ),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: disable ? null : () {
                           print('Check update profile');
                           if (!updateProfileStatus) {
                             Fluttertoast.showToast(
@@ -357,7 +373,7 @@ class _ChooseCompScreenState extends State<ChooseCompScreen> {
                                   updateSuccess()
                                 }),
                                 Fluttertoast.showToast(
-                                msg: "Applied Success",
+                                msg: "Your CV has been sent.",
                                 toastLength: Toast.LENGTH_LONG,
                                 gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,

@@ -22,6 +22,10 @@ class ProfileViewModel with ChangeNotifier {
     String token = await prefs.getString('token');
     // print('$email - $token');
     Profile pro = await WebService().getProfile(email,token);
+    // int lastSent = 0;
+    // if (pro.lastSent != null) {
+    //   lastSent = pro.lastSent;
+    // }
     notifyListeners();
     this.profile = Profile(
       code: pro.code,
@@ -33,7 +37,8 @@ class ProfileViewModel with ChangeNotifier {
       majorCode: pro.majorCode,
       uniCode: pro.uniCode,
       majorName: pro.majorName,
-      graduation: pro.graduation
+      graduation: pro.graduation,
+        lastSent: pro.lastSent
     );
     if (this.profile == null) {
       this.loadingStatus = true;

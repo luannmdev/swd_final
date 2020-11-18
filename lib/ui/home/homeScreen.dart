@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:swdprojectbackup/models/application.dart';
+import 'package:swdprojectbackup/services/web_service.dart';
 import 'package:swdprojectbackup/ui/blank/blankScreen.dart';
 import 'package:swdprojectbackup/ui/news/newsListViewModel.dart';
 import 'package:swdprojectbackup/ui/news/newsScreen.dart';
@@ -55,12 +57,16 @@ class IndexPageState extends State<IndexPage> {
   PageController pageController;
   int _selectedIndex = 0;
   Widget _myReport = BlankScreen();
+  bool disableApplyJob;
 
   IndexPageState(this.appliedList);
 
   @override
   void initState() {
     // print('appliedList - ${appliedList.length}');
+    if (disableApplyJob == null) {
+      disableApplyJob= false;
+    }
     if(appliedList == null) {
       appliedList = new List();
     }
@@ -80,6 +86,11 @@ class IndexPageState extends State<IndexPage> {
     print('test thanh cong ${appliedList.toString()}');
   }
 
+  void onStatusChange(bool status) {
+    setState(() => disableApplyJob = status);
+    print('test thanh cong ${disableApplyJob.toString()}');
+  }
+
   void onTapHandler(int index) {
     this.setState(() {
       this._selectedIndex = index;
@@ -93,9 +104,14 @@ class IndexPageState extends State<IndexPage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     var profileViewModel = Provider.of<ProfileViewModel>(context);
+    if ((profileViewModel.profile.lastSent != 0)&&(profileViewModel.profile.lastSent != null)) {
+      disableApplyJob = true;
+
+    }
     final key = GlobalKey<State<BottomNavigationBar>>();
     if (!profileViewModel.loadingStatus) {
       return Scaffold(
@@ -117,11 +133,14 @@ class IndexPageState extends State<IndexPage> {
               onPageChanged: onPageChanged,
               children: [
                 NewsScreen(
+                      disableApplyJob,
                       appliedList,
                       profileViewModel.profile.uniCode,
                       profileViewModel.profile.majorCode,
                       profileViewModel.profile.graduation,
+                    profileViewModel.profile.code,
                       onDataChange,
+                      profileViewModel.profile.lastSent
                 ),
                 OjtScreen(
                       appliedList: appliedList,
@@ -129,6 +148,8 @@ class IndexPageState extends State<IndexPage> {
                       majorCode: profileViewModel.profile.majorCode,
                       subject: profileViewModel.profile.graduation,
                       onDataChange: onDataChange,
+                      onStatusChange: onStatusChange,
+                      disableApplyJob: disableApplyJob,
                     ),
 
                 BlankScreen(),
@@ -201,6 +222,8 @@ class IndexPageState extends State<IndexPage> {
   //     }
   //   }
   // }
+
+
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
