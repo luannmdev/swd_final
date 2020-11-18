@@ -40,6 +40,8 @@ Future<bool> signInWithGoogle() async {
       await prefs.setString('idToken', idToken);
       await prefs.setString('email', user.email);
       await prefs.setString('photoUrl', user.photoURL);
+
+
     } else {
       signOutGoogle();
     }
