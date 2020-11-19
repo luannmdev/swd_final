@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swdprojectbackup/models/account.dart';
 import 'package:swdprojectbackup/models/profile.dart';
 import 'package:swdprojectbackup/services/google_service.dart';
-import 'package:swdprojectbackup/services/web_service.dart';
 import 'package:swdprojectbackup/ui/loadCV/loadCvScreen.dart';
 import 'package:swdprojectbackup/ui/login/loginScreen.dart';
 import 'package:swdprojectbackup/ui/profile/profileViewModel.dart';
@@ -74,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           color: Colors.white,
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: snapshot.hasData ? NetworkImage(snapshot.data) : CircularProgressIndicator(),
+            image: snapshot.hasData ? NetworkImage(snapshot.data) : AssetImage('images/avt_backup.png'),
           ),
         ),
       ),

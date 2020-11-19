@@ -110,8 +110,10 @@ class _NewsScreenState extends State<NewsScreen>
             showIndicator: true,
             indicatorBgPadding: 7.0,
             images: [
+              // AssetImage('images/Google.jpg'),
               AssetImage('images/TMA.png'),
-              AssetImage('images/Google.jpg'),
+              // AssetImage('images/TMA.png'),
+
             ],
           ),
         ),
