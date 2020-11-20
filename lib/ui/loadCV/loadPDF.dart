@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:swdprojectbackup/services/launch_pdf.dart';
 
@@ -109,11 +110,14 @@ class _LoadFirbaseStoragePdfState extends State<LoadFirbaseStoragePdf> {
                 borderRadius: BorderRadius.circular(30.0)),
             child: FlatButton(
               onPressed: () async {
-                 // pickFileChooser().then((value) => {
-                 //   if (value is File) {
-                 //     print('aasaaaaaaaaaaaaaaaaaaaa FILE')
-                 //   }
-                 // });
+                 String pathFromPhone;
+                 pickFileChooser().then((value) => {
+                   if (value is File) {
+                     pathFromPhone = value.path.split('/').last.toString(),
+                     print('Select file: $pathFromPhone'),
+                     saveToStorage(value,'cv/cvuser.pdf'),
+                   }
+                 });
               },
               child: Text(
                 "Upload CV",
@@ -157,6 +161,13 @@ class _LoadFirbaseStoragePdfState extends State<LoadFirbaseStoragePdf> {
       ),
     );
   }
+}
+
+Future<dynamic> saveToStorage(File file, String filename) async {
+return await FirebaseStorage.instance
+    .ref()
+    .child(filename)
+    .putFile(file);
 }
 // Future<File> pickFileChooser() async {
 //   File result = await FilePicker.getFile(
