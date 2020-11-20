@@ -179,7 +179,11 @@ class WebService {
 
   Future<University> getUnibyCode(String code) async {
     String url = Constants.GET_UNI_BY_ID + code+ "?_id="+ code;
-    http.Response response = await http.get(url);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String idToken = await prefs.getString('idToken');
+    Map<String, String> hearder = {"authorization": "Bearer ${idToken}"};
+    print(url);
+    http.Response response = await http.get(url,headers: hearder);
     if(response.statusCode == 200){
       University uni = University.fromJson(jsonDecode(response.body));
       return uni;

@@ -3,11 +3,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swdprojectbackup/models/profile.dart';
+import 'package:swdprojectbackup/models/university.dart';
 import 'package:swdprojectbackup/services/google_service.dart';
 import 'package:swdprojectbackup/ui/loadCV/loadPDF.dart';
+import 'package:swdprojectbackup/services/web_service.dart';
+import 'package:swdprojectbackup/ui/loadCV/loadCvScreen.dart';
 import 'package:swdprojectbackup/ui/login/loginScreen.dart';
 import 'package:swdprojectbackup/ui/profile/profileViewModel.dart';
 import 'package:swdprojectbackup/services/launch_pdf.dart';
+import 'package:swdprojectbackup/ui/uni/uniScreen.dart';
 
 
 
@@ -22,6 +26,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final Profile profile;
+  University university;
 
   _ProfileScreenState(this.profile);
 
@@ -40,8 +45,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<String> getPhoto() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String photoUrl= prefs.getString('photoUrl');
+    String photoUrl = prefs.getString('photoUrl');
     return photoUrl;
+  }
+
+  Future<University> getUni() async {
+    University uni = await WebService().getUnibyCode(profile.uniCode);
+    print('Uni n: ' + uni.toString());
+    setState(() {
+      university = new University(
+        phoneNo: uni.phoneNo,
+        name: uni.name,
+        link: uni.link,
+        email: uni.email,
+        description: uni.description,
+        code: uni.code,
+        address: uni.address,
+      );
+    });
+    print(university.name);
+    return uni;
   }
 
   Set<int> listEdit = new Set<int>();
@@ -57,39 +80,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
   Future<String> _future() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.getString('photoUrl');
   }
+
   Widget _circleAvatar() {
     return FutureBuilder(
       future: getPhoto(),
-      builder: (context, snapshot) =>Container(
-        width: MediaQuery.of(context).size.width / 2,
-        height: MediaQuery.of(context).size.width / 2,
-        padding: EdgeInsets.all(10.0),
-        margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 5),
-          shape: BoxShape.circle,
-          color: Colors.white,
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: snapshot.hasData ? NetworkImage(snapshot.data) : AssetImage('images/avt_backup.png'),
+      builder: (context, snapshot) =>
+          Container(
+            width: MediaQuery
+                .of(context)
+                .size
+                .width / 2,
+            height: MediaQuery
+                .of(context)
+                .size
+                .width / 2,
+            padding: EdgeInsets.all(10.0),
+            margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 5),
+              shape: BoxShape.circle,
+              color: Colors.white,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: snapshot.hasData
+                    ? NetworkImage(snapshot.data)
+                    : AssetImage('images/avt_backup.png'),
+              ),
+            ),
           ),
-        ),
-      ),
     );
   }
 
-  Widget _textFormField(
-      {id,
-      String hintText,
-      IconData icon,
-      String text,
-      bool editable,
-      FocusNode focusNode,
-      TextEditingController controller}) {
+  Widget _textFormField({id,
+    String hintText,
+    IconData icon,
+    String text,
+    bool editable,
+    FocusNode focusNode,
+    TextEditingController controller}) {
     final int textId = id;
     return Material(
       elevation: 2,
@@ -105,7 +138,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Icon(
               icon,
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
             ),
           ),
           Container(
@@ -238,12 +273,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
             editable: false,
           ),
           SizedBox(height: 3),
+          SafeArea(child: FutureBuilder<University>(
+            future: getUni(),
+            builder: (BuildContext context, AsyncSnapshot<University> snapshot) =>
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 40,
+                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0x88999999),
+                          offset: Offset(0, 5),
+                          blurRadius: 5.0,
+                        ),
+                      ]),
+                  child: FlatButton(
+                    onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => UniScreen(university: university,)),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Text("University:   "),
+                        Text(
+                          snapshot.hasData ? snapshot.data.name : "Loading",
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+          )),
+          SizedBox(height: 3),
           Container(
             margin: const EdgeInsets.only(top: 10.0),
             height: 55,
             width: 150,
             child: RaisedButton(
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
               child: Center(
                 child: Text(
                   'Update',
@@ -307,13 +382,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               fontSize: 16.0);
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) {
-            return LoginScreen();
-          }), ModalRoute.withName('/'));
+                return LoginScreen();
+              }), ModalRoute.withName('/'));
         },
         color: Colors.redAccent,
         child: Text(
           'Sign Out',
-          style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -321,7 +397,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buttonCv() {
     return Container(
-      margin: const EdgeInsets.only(top: 10,bottom: 10),
+      margin: const EdgeInsets.only(top: 10, bottom: 10),
       width: 150,
       height: 50,
       child: RaisedButton(
@@ -344,9 +420,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     Provider.of<ProfileViewModel>(context, listen: false).getProfile();
     textController_fullname =
-        new TextEditingController(text: '${profile.fullname}');
+    new TextEditingController(text: '${profile.fullname}');
     textController_phoneNo =
-        new TextEditingController(text: '${profile.phoneNo}');
+    new TextEditingController(text: '${profile.phoneNo}');
     textController_gpa = new TextEditingController(text: '${profile.gpa}');
     textController_cvLink = profile.cv == 'null'
         ? new TextEditingController()
@@ -361,7 +437,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
+    Size screenSize = MediaQuery
+        .of(context)
+        .size;
     return Scaffold(
       body: Stack(
         children: [
@@ -371,7 +449,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               _circleAvatar(),
               Container(
-                height: MediaQuery.of(context).size.height*0.54,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.54,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -393,7 +474,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 class HeaderCurvedContainer extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = const Color(0xff6361f3);
+    Paint paint = Paint()
+      ..color = const Color(0xff6361f3);
     Path path = Path()
       ..relativeLineTo(0, 150)
       ..quadraticBezierTo(size.width / 2, 250.0, size.width, 150)
