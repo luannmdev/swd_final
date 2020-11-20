@@ -86,6 +86,7 @@ class IndexPageState extends State<IndexPage> {
         setState(() {
           messages.add(Message(
               title: notification['title'], body: notification['body']));
+          _showNoti(context);
         });
       },
       onLaunch: (Map<String, dynamic> message) async {
@@ -286,5 +287,25 @@ class IndexPageState extends State<IndexPage> {
           ),
         )) ??
         false;
+  }
+
+  Future _showNoti(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Notification'),
+          content: Text('You have a notification!'),
+          actions: [
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
