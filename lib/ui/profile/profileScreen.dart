@@ -4,9 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swdprojectbackup/models/profile.dart';
 import 'package:swdprojectbackup/services/google_service.dart';
-import 'package:swdprojectbackup/ui/loadCV/loadCvScreen.dart';
+import 'package:swdprojectbackup/ui/loadCV/loadPDF.dart';
 import 'package:swdprojectbackup/ui/login/loginScreen.dart';
 import 'package:swdprojectbackup/ui/profile/profileViewModel.dart';
+import 'package:swdprojectbackup/services/launch_pdf.dart';
+
+
 
 class ProfileScreen extends StatefulWidget {
   final Profile profile;
@@ -324,11 +327,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: RaisedButton(
         onPressed: () {
           Navigator.of(context)
-              .push(new MaterialPageRoute(builder: (context) => CvScreen()));
+              .push(new MaterialPageRoute(builder: (context) => LoadFirbaseStoragePdf()));
         },
         color: Colors.blue,
         child: Text(
-          'Update CV',
+          'CV',
           style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
@@ -353,6 +356,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     textFieldFocus_phoneNo = FocusNode();
     textFieldFocus_gpa = FocusNode();
     textFieldFocus_cvLink = FocusNode();
+
   }
 
   @override

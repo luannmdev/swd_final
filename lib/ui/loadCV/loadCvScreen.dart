@@ -6,9 +6,10 @@ import 'package:swdprojectbackup/services/fire_storage_service.dart';
 final Color yellow = Color(0xfffbc31b);
 final Color orange = Color(0xfffb6900);
 final String image1 = "images/cv2.jpg";
+final String cv = "images/cvuser.pdf";
 // final String image2 = "images/cv1.png";
 
-String image = image1;
+String filePdf = cv;
 
 class CvScreen extends StatelessWidget {
   @override
@@ -73,7 +74,7 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30.0),
                           child: FutureBuilder(
-                            future: _getImage(context, image),
+                            future: _getImage(context, filePdf),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.done)
@@ -147,11 +148,11 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage> {
     );
   }
 
-  Future<Widget> _getImage(BuildContext context, String image) async {
+  Future<Widget> _getImage(BuildContext context, String fileName) async {
     Image m;
-    await FireStorageService.loadFromStorage(context, image)
+    await FireStorageService.loadFromStorage(context, fileName)
         .then((downloadUrl) {
-      print('aaaaaaaaaaaaaa = $downloadUrl');
+      print('CV URL = $downloadUrl');
       m = Image.network(
         downloadUrl.toString(),
         fit: BoxFit.scaleDown,
